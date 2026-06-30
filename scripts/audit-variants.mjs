@@ -8,6 +8,11 @@
 // (`components/docs/registry.tsx`, a `c("slug", …)` helper). Uses the cached
 // /tmp/fig-components.json if present, else fetches.
 //
+// NOTE: this repo's Figma components are NOT published to a team library, so the
+// `/v1/files/{key}/components` endpoint returns 0. We instead walk the document
+// tree of each "Components"-section page and collect the variant COMPONENT nodes
+// (named `prop=value, …`) directly — the same source `audit-components` uses.
+//
 // Token:    $FIGMA_PERSONAL_ACCESS_TOKEN or mcpServers.figma.env in ./.mcp.json
 // File key: $FIGMA_FILE_KEY (defaults to the shared design file)
 
@@ -27,18 +32,59 @@ function tokenValue() {
     .mcpServers.figma.env.FIGMA_PERSONAL_ACCESS_TOKEN.trim()
 }
 
+// Find the pages under the file's "Components" section (mirrors audit-components).
+async function componentPages(headers) {
+  const res = await fetch(`https://api.figma.com/v1/files/${FILE_KEY}?depth=1`, { headers })
+  if (!res.ok) throw new Error(`Figma HTTP ${res.status} — token may be expired or lack file access`)
+  const doc = (await res.json()).document
+  const pages = []
+  let section = null
+  for (const p of doc.children) {
+    const raw = p.name.replace(/↳/g, "").trim()
+    const isChild = p.name.includes("↳")
+    if (raw === "" || /^-+$/.test(raw)) continue
+    if (!isChild) { section = raw; continue }
+    if (section === "Components") pages.push({ id: p.id, name: raw })
+  }
+  return pages
+}
+
 async function load() {
   if (existsSync(CACHE)) return JSON.parse(readFileSync(CACHE, "utf8"))
   let tok
   try { tok = tokenValue() } catch { tok = null }
   if (!tok) throw new Error("no Figma token (set $FIGMA_PERSONAL_ACCESS_TOKEN or .mcp.json)")
-  const res = await fetch(`https://api.figma.com/v1/files/${FILE_KEY}/components`, {
-    headers: { "X-Figma-Token": tok },
-  })
-  if (!res.ok) throw new Error(`Figma HTTP ${res.status} — token may be expired or lack file access`)
-  const j = await res.json()
-  writeFileSync(CACHE, JSON.stringify(j))
-  return j
+  const headers = { "X-Figma-Token": tok }
+
+  const pages = await componentPages(headers)
+  // Walk each Components page's node tree (batched) and collect every variant
+  // COMPONENT (name contains `=`), tagging it with its page name so the grouping
+  // below behaves exactly as it did against the published `/components` shape.
+  const components = []
+  const CHUNK = 8
+  for (let i = 0; i < pages.length; i += CHUNK) {
+    const batch = pages.slice(i, i + CHUNK)
+    const ids = batch.map((p) => p.id).join(",")
+    const res = await fetch(
+      `https://api.figma.com/v1/files/${FILE_KEY}/nodes?ids=${encodeURIComponent(ids)}`,
+      { headers },
+    )
+    if (!res.ok) throw new Error(`Figma HTTP ${res.status} (nodes) — token may lack file access`)
+    const j = await res.json()
+    for (const p of batch) {
+      const node = j.nodes[p.id]?.document
+      if (!node) continue
+      ;(function walk(n) {
+        if (n.type === "COMPONENT" && n.name.includes("=")) {
+          components.push({ name: n.name, containing_frame: { pageName: p.name } })
+        }
+        for (const c of n.children || []) walk(c)
+      })(node)
+    }
+  }
+  const data = { meta: { components } }
+  writeFileSync(CACHE, JSON.stringify(data))
+  return data
 }
 
 const OVERRIDES = {
@@ -48,7 +94,9 @@ const OVERRIDES = {
   seperator: "separator",
 }
 const slugify = (name) => {
-  const n = name.replace(/↳/g, "").trim().toLowerCase()
+  // strip ↳ tree markers and decoration emoji (e.g. the 🔵 "new" badge on some
+  // Components pages) so the page name reduces to a clean shadcn slug.
+  const n = name.replace(/↳/g, "").replace(/[^\x00-\x7F]/g, "").trim().toLowerCase()
   return OVERRIDES[n] || n.replace(/\s+/g, "-")
 }
 

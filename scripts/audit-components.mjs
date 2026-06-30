@@ -55,7 +55,9 @@ const OVERRIDES = {
 }
 
 const slugify = (name) => {
-  const n = name.replace(/↳/g, "").trim().toLowerCase()
+  // strip ↳ tree markers and decoration emoji (e.g. the 🔵 "new" badge on some
+  // Components pages) so the page name reduces to a clean shadcn slug.
+  const n = name.replace(/↳/g, "").replace(/[^\x00-\x7F]/g, "").trim().toLowerCase()
   return OVERRIDES[n] || n.replace(/\s+/g, "-")
 }
 
