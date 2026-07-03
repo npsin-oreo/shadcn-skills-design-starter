@@ -26,7 +26,8 @@ Design in Figma → tokens flow **1:1** into Tailwind → AI skills build, revie
 ## 🧩 Design Components → Storybook
 
 Three shadcn/ui components taken through the full design-system pipeline
-(**tokens → code → docs → Storybook**) in an **Apple** design language:
+(**tokens → code → docs → Storybook**) on the **neutral base** (apply a brand on top — see
+[`docs/applying-a-brand.md`](docs/applying-a-brand.md)):
 
 | Component | Level | States covered |
 |---|---|---|

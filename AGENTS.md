@@ -14,8 +14,10 @@ must-not-break rules. CLAUDE.md is the source of truth.
 
 ## What this is
 
-A Next.js (App Router) + Tailwind v4 + shadcn/ui app driven by a DTCG design-token system,
-re-pointed to an **Apple** visual language. Every component is documented at "assignment depth":
+A Next.js (App Router) + Tailwind v4 + shadcn/ui app driven by a DTCG design-token system on a
+**neutral base** (shadcn neutral, in sync with the Figma neutral collection). It's a starter tool —
+apply a brand on top with the `apply-aesthetic` skill (see `docs/applying-a-brand.md`). Every
+component is documented at "assignment depth":
 state/variant stories in `stories/manual/**`, a 1:1 MDX doc in `stories/docs/**` (bound via
 `<Meta of={…}>`), and a component-tier token block in `tokens/*.tokens.json`.
 

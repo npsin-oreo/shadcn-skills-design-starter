@@ -61,7 +61,7 @@ export const WithForm: Story = {
           </Field>
           <Field>
             <FieldLabel htmlFor="d-email">Email</FieldLabel>
-            <Input id="d-email" type="email" defaultValue="tim@apple.com" />
+            <Input id="d-email" type="email" defaultValue="jane@example.com" />
           </Field>
         </div>
         <DialogFooter>

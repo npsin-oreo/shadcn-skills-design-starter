@@ -51,79 +51,79 @@
 }
 
 :root {
-  /* APPLE design language (apply-aesthetic: apple). All pairs verified WCAG 2.2 AA.
-     Semantic tier — compiled from tokens/color.tokens.json (light mode). */
-  --font-sans: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text",
-    "Helvetica Neue", Helvetica, Arial, sans-serif;
-  --background: #ffffff;
-  --foreground: #1d1d1f;
-  --card: #ffffff;
-  --card-foreground: #1d1d1f;
-  --popover: #ffffff;
-  --popover-foreground: #1d1d1f;
-  --primary: #0071e3; /* Apple action blue — white text 4.70:1 */
-  --primary-foreground: #ffffff;
-  --secondary: #f5f5f7;
-  --secondary-foreground: #1d1d1f;
-  --muted: #f5f5f7;
-  --muted-foreground: #6e6e73; /* 5.07:1 on white */
-  --accent: #f5f5f7;
-  --accent-foreground: #1d1d1f;
-  --destructive: #d70015; /* white text 5.38:1 */
-  --border: #d2d2d7;
-  --input: #d2d2d7;
-  --ring: #0071e3;
-  /* chart palette — blue ramp (Apple-aligned) */
+  /* NEUTRAL base (shadcn neutral / OKLCH) — in sync with the Figma neutral collection.
+     Semantic tier — mirrors tokens/color.tokens.json. Brand a project on top of this:
+     see docs/applying-a-brand.md (apply-aesthetic skill re-points these values). */
+  --font-sans: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
+  --background: oklch(1 0 0);
+  --foreground: oklch(0.145 0 0);
+  --card: oklch(1 0 0);
+  --card-foreground: oklch(0.145 0 0);
+  --popover: oklch(1 0 0);
+  --popover-foreground: oklch(0.145 0 0);
+  --primary: oklch(0.205 0 0);
+  --primary-foreground: oklch(0.985 0 0);
+  --secondary: oklch(0.97 0 0);
+  --secondary-foreground: oklch(0.205 0 0);
+  --muted: oklch(0.97 0 0);
+  --muted-foreground: oklch(0.556 0 0);
+  --accent: oklch(0.97 0 0);
+  --accent-foreground: oklch(0.205 0 0);
+  --destructive: oklch(0.577 0.245 27.325);
+  --border: oklch(0.922 0 0);
+  --input: oklch(0.922 0 0);
+  --ring: oklch(0.708 0 0);
+  /* chart palette — blue data-viz ramp */
   --chart-1: oklch(0.734 0.121 243.1);
   --chart-2: oklch(0.649 0.193 251.8);
   --chart-3: oklch(0.622 0.183 251.7);
   --chart-4: oklch(0.556 0.162 252.2);
   --chart-5: oklch(0.324 0.096 258.8);
-  --radius: 0.75rem; /* Apple-soft 12px controls */
-  --sidebar: #f5f5f7;
-  --sidebar-foreground: #1d1d1f;
-  --sidebar-primary: #0071e3;
-  --sidebar-primary-foreground: #ffffff;
-  --sidebar-accent: #ffffff;
-  --sidebar-accent-foreground: #1d1d1f;
-  --sidebar-border: #d2d2d7;
-  --sidebar-ring: #0071e3;
+  --radius: 0.625rem; /* shadcn neutral — 10px */
+  --sidebar: oklch(0.985 0 0);
+  --sidebar-foreground: oklch(0.145 0 0);
+  --sidebar-primary: oklch(0.205 0 0);
+  --sidebar-primary-foreground: oklch(0.985 0 0);
+  --sidebar-accent: oklch(0.97 0 0);
+  --sidebar-accent-foreground: oklch(0.205 0 0);
+  --sidebar-border: oklch(0.922 0 0);
+  --sidebar-ring: oklch(0.708 0 0);
 }
 
 .dark {
-  /* APPLE dark — absolute black scenes + graphite surfaces. Verified WCAG 2.2 AA. */
-  --background: #000000;
-  --foreground: #f5f5f7;
-  --card: #1d1d1f;
-  --card-foreground: #f5f5f7;
-  --popover: #1d1d1f;
-  --popover-foreground: #f5f5f7;
-  --primary: #0071e3; /* white text 4.70:1 */
-  --primary-foreground: #ffffff;
-  --secondary: #272729;
-  --secondary-foreground: #f5f5f7;
-  --muted: #272729;
-  --muted-foreground: #86868b; /* 5.80:1 on black */
-  --accent: #272729;
-  --accent-foreground: #f5f5f7;
-  --destructive: #ff453a; /* as text 6.16:1 on black */
-  --border: #424245;
-  --input: #424245;
-  --ring: #0a84ff; /* 5.76:1 on black */
-  /* chart palette — blue ramp */
+  /* NEUTRAL dark (shadcn neutral / OKLCH). */
+  --background: oklch(0.145 0 0);
+  --foreground: oklch(0.985 0 0);
+  --card: oklch(0.205 0 0);
+  --card-foreground: oklch(0.985 0 0);
+  --popover: oklch(0.205 0 0);
+  --popover-foreground: oklch(0.985 0 0);
+  --primary: oklch(0.922 0 0);
+  --primary-foreground: oklch(0.205 0 0);
+  --secondary: oklch(0.269 0 0);
+  --secondary-foreground: oklch(0.985 0 0);
+  --muted: oklch(0.269 0 0);
+  --muted-foreground: oklch(0.708 0 0);
+  --accent: oklch(0.269 0 0);
+  --accent-foreground: oklch(0.985 0 0);
+  --destructive: oklch(0.704 0.191 22.216);
+  --border: oklch(1 0 0 / 10%);
+  --input: oklch(1 0 0 / 15%);
+  --ring: oklch(0.556 0 0);
+  /* chart palette — blue data-viz ramp */
   --chart-1: oklch(0.734 0.121 243.1);
   --chart-2: oklch(0.649 0.193 251.8);
   --chart-3: oklch(0.622 0.183 251.7);
   --chart-4: oklch(0.556 0.162 252.2);
   --chart-5: oklch(0.324 0.096 258.8);
-  --sidebar: #1d1d1f;
-  --sidebar-foreground: #f5f5f7;
-  --sidebar-primary: #0071e3;
-  --sidebar-primary-foreground: #ffffff;
-  --sidebar-accent: #272729;
-  --sidebar-accent-foreground: #f5f5f7;
-  --sidebar-border: #424245;
-  --sidebar-ring: #0a84ff;
+  --sidebar: oklch(0.205 0 0);
+  --sidebar-foreground: oklch(0.985 0 0);
+  --sidebar-primary: oklch(0.922 0 0);
+  --sidebar-primary-foreground: oklch(0.205 0 0);
+  --sidebar-accent: oklch(0.269 0 0);
+  --sidebar-accent-foreground: oklch(0.985 0 0);
+  --sidebar-border: oklch(1 0 0 / 10%);
+  --sidebar-ring: oklch(0.556 0 0);
 }
 
 @layer base {

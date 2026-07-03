@@ -1,29 +1,25 @@
 {
   "$schema": "https://design-tokens.github.io/community-group/format/",
-  "$description": "3-tier color architecture (Primitive → Semantic → Component) re-pointed to an APPLE design language (apply-aesthetic: apple). Action blue #0071e3, near-black ink #1d1d1f, pale gray #f5f5f7 light surfaces, graphite dark surfaces. Light $value + dark override under $extensions.mode.dark. Every mapped text/UI pair verified WCAG 2.2 AA via scripts/contrast.py. globals.css :root/.dark is the compiled output. NOTE: intentionally diverges from the original Figma-synced neutral theme.",
+  "$description": "3-tier color architecture (Primitive → Semantic → Component) — the NEUTRAL base (shadcn neutral / OKLCH), in sync with the Figma neutral collection. This is a starting tool: apply a brand on top with the apply-aesthetic skill (see docs/applying-a-brand.md), which re-points only this file's primitive + semantic layers. Light $value + dark override under $extensions.mode.dark. globals.css :root/.dark is the compiled output (npm run tokens:build).",
 
   "primitive": {
-    "$description": "Raw Apple palette — never referenced directly in components.",
+    "$description": "Raw neutral palette (shadcn neutral / OKLCH) — never referenced directly in components.",
     "white":     { "$type": "color", "$value": "#ffffff" },
-    "black":     { "$type": "color", "$value": "#000000" },
-    "ink":       { "$type": "color", "$value": "#1d1d1f", "$description": "Near-black primary text/ink" },
-    "blue": {
-      "action":  { "$type": "color", "$value": "#0071e3", "$description": "Primary action fill + focus signal (white text = 4.70:1 AA)" },
-      "link":    { "$type": "color", "$value": "#0066cc", "$description": "Inline link on light" },
-      "bright":  { "$type": "color", "$value": "#2997ff", "$description": "High-luminance link on dark scenes" },
-      "ring-dark": { "$type": "color", "$value": "#0a84ff", "$description": "Focus ring on dark (5.76:1 on black)" }
-    },
-    "gray": {
-      "f5":       { "$type": "color", "$value": "#f5f5f7", "$description": "Pale Apple gray — light surfaces" },
-      "border":   { "$type": "color", "$value": "#d2d2d7", "$description": "Soft border / divider" },
-      "mid":      { "$type": "color", "$value": "#86868b", "$description": "Mid border / dark secondary text" },
-      "text":     { "$type": "color", "$value": "#6e6e73", "$description": "Secondary text (5.07:1 on white AA)" },
-      "graphite": { "$type": "color", "$value": "#272729", "$description": "Dark card/utility surface" },
-      "utility":  { "$type": "color", "$value": "#424245", "$description": "Dark border / utility neutral" }
+    "white-a10": { "$type": "color", "$value": "oklch(1 0 0 / 10%)", "$description": "Translucent white — dark-mode border" },
+    "white-a15": { "$type": "color", "$value": "oklch(1 0 0 / 15%)", "$description": "Translucent white — dark-mode input" },
+    "neutral": {
+      "50":  { "$type": "color", "$value": "oklch(0.985 0 0)", "$description": "Near-white — light surfaces / dark text" },
+      "100": { "$type": "color", "$value": "oklch(0.970 0 0)", "$description": "Muted / secondary / accent surfaces (light)" },
+      "200": { "$type": "color", "$value": "oklch(0.922 0 0)", "$description": "Border / input (light)" },
+      "400": { "$type": "color", "$value": "oklch(0.708 0 0)", "$description": "Ring (light) / muted text (dark)" },
+      "500": { "$type": "color", "$value": "oklch(0.556 0 0)", "$description": "Muted/secondary text (light) — AA on white" },
+      "800": { "$type": "color", "$value": "oklch(0.269 0 0)", "$description": "Muted / secondary / accent surfaces (dark)" },
+      "900": { "$type": "color", "$value": "oklch(0.205 0 0)", "$description": "Primary surface (light) / card (dark)" },
+      "950": { "$type": "color", "$value": "oklch(0.145 0 0)", "$description": "Near-black ink (light text) / background (dark)" }
     },
     "red": {
-      "strong": { "$type": "color", "$value": "#d70015", "$description": "Light destructive (white text 5.38:1)" },
-      "bright": { "$type": "color", "$value": "#ff453a", "$description": "Dark destructive text (6.16:1 on black)" }
+      "light": { "$type": "color", "$value": "oklch(0.577 0.245 27.325)", "$description": "Destructive (light)" },
+      "dark":  { "$type": "color", "$value": "oklch(0.704 0.191 22.216)", "$description": "Destructive (dark)" }
     },
     "chart": {
       "1": { "$type": "color", "$value": "oklch(0.734 0.121 243.1)" },
@@ -35,25 +31,25 @@
   },
 
   "semantic": {
-    "$description": "Purpose-based roles. $value = LIGHT primitive; $extensions.mode.dark = DARK primitive. Names map 1:1 to CSS vars in globals.css and Tailwind token classes.",
-    "background":            { "$type": "color", "$value": "{primitive.white}",        "$extensions": { "mode": { "dark": "{primitive.black}" } } },
-    "foreground":            { "$type": "color", "$value": "{primitive.ink}",          "$extensions": { "mode": { "dark": "{primitive.gray.f5}" } } },
-    "card":                  { "$type": "color", "$value": "{primitive.white}",        "$extensions": { "mode": { "dark": "{primitive.ink}" } } },
-    "card-foreground":       { "$type": "color", "$value": "{primitive.ink}",          "$extensions": { "mode": { "dark": "{primitive.gray.f5}" } } },
-    "popover":               { "$type": "color", "$value": "{primitive.white}",        "$extensions": { "mode": { "dark": "{primitive.ink}" } } },
-    "popover-foreground":    { "$type": "color", "$value": "{primitive.ink}",          "$extensions": { "mode": { "dark": "{primitive.gray.f5}" } } },
-    "primary":               { "$type": "color", "$value": "{primitive.blue.action}",  "$description": "Apple action blue, both modes (white text 4.70:1 AA)", "$extensions": { "mode": { "dark": "{primitive.blue.action}" } } },
-    "primary-foreground":    { "$type": "color", "$value": "{primitive.white}",        "$extensions": { "mode": { "dark": "{primitive.white}" } } },
-    "secondary":             { "$type": "color", "$value": "{primitive.gray.f5}",      "$extensions": { "mode": { "dark": "{primitive.gray.graphite}" } } },
-    "secondary-foreground":  { "$type": "color", "$value": "{primitive.ink}",          "$extensions": { "mode": { "dark": "{primitive.gray.f5}" } } },
-    "muted":                 { "$type": "color", "$value": "{primitive.gray.f5}",      "$extensions": { "mode": { "dark": "{primitive.gray.graphite}" } } },
-    "muted-foreground":      { "$type": "color", "$value": "{primitive.gray.text}",    "$description": "Secondary/placeholder text — 5.07:1 light, 5.80:1 dark", "$extensions": { "mode": { "dark": "{primitive.gray.mid}" } } },
-    "accent":                { "$type": "color", "$value": "{primitive.gray.f5}",      "$extensions": { "mode": { "dark": "{primitive.gray.graphite}" } } },
-    "accent-foreground":     { "$type": "color", "$value": "{primitive.ink}",          "$extensions": { "mode": { "dark": "{primitive.gray.f5}" } } },
-    "destructive":           { "$type": "color", "$value": "{primitive.red.strong}",   "$extensions": { "mode": { "dark": "{primitive.red.bright}" } } },
-    "border":                { "$type": "color", "$value": "{primitive.gray.border}",  "$extensions": { "mode": { "dark": "{primitive.gray.utility}" } } },
-    "input":                 { "$type": "color", "$value": "{primitive.gray.border}",  "$extensions": { "mode": { "dark": "{primitive.gray.utility}" } } },
-    "ring":                  { "$type": "color", "$value": "{primitive.blue.action}",  "$description": "Apple blue focus signal", "$extensions": { "mode": { "dark": "{primitive.blue.ring-dark}" } } }
+    "$description": "Purpose-based roles. $value = LIGHT primitive; $extensions.mode.dark = DARK primitive. Names map 1:1 to CSS vars in globals.css and Tailwind token classes. Re-point THESE (+ primitives) to brand a project.",
+    "background":            { "$type": "color", "$value": "{primitive.white}",         "$extensions": { "mode": { "dark": "{primitive.neutral.950}" } } },
+    "foreground":            { "$type": "color", "$value": "{primitive.neutral.950}",   "$extensions": { "mode": { "dark": "{primitive.neutral.50}" } } },
+    "card":                  { "$type": "color", "$value": "{primitive.white}",         "$extensions": { "mode": { "dark": "{primitive.neutral.900}" } } },
+    "card-foreground":       { "$type": "color", "$value": "{primitive.neutral.950}",   "$extensions": { "mode": { "dark": "{primitive.neutral.50}" } } },
+    "popover":               { "$type": "color", "$value": "{primitive.white}",         "$extensions": { "mode": { "dark": "{primitive.neutral.900}" } } },
+    "popover-foreground":    { "$type": "color", "$value": "{primitive.neutral.950}",   "$extensions": { "mode": { "dark": "{primitive.neutral.50}" } } },
+    "primary":               { "$type": "color", "$value": "{primitive.neutral.900}",   "$description": "Near-black in light, near-white in dark (shadcn neutral)", "$extensions": { "mode": { "dark": "{primitive.neutral.200}" } } },
+    "primary-foreground":    { "$type": "color", "$value": "{primitive.neutral.50}",    "$extensions": { "mode": { "dark": "{primitive.neutral.900}" } } },
+    "secondary":             { "$type": "color", "$value": "{primitive.neutral.100}",   "$extensions": { "mode": { "dark": "{primitive.neutral.800}" } } },
+    "secondary-foreground":  { "$type": "color", "$value": "{primitive.neutral.900}",   "$extensions": { "mode": { "dark": "{primitive.neutral.50}" } } },
+    "muted":                 { "$type": "color", "$value": "{primitive.neutral.100}",   "$extensions": { "mode": { "dark": "{primitive.neutral.800}" } } },
+    "muted-foreground":      { "$type": "color", "$value": "{primitive.neutral.500}",   "$description": "Secondary/placeholder text — AA both modes", "$extensions": { "mode": { "dark": "{primitive.neutral.400}" } } },
+    "accent":                { "$type": "color", "$value": "{primitive.neutral.100}",   "$extensions": { "mode": { "dark": "{primitive.neutral.800}" } } },
+    "accent-foreground":     { "$type": "color", "$value": "{primitive.neutral.900}",   "$extensions": { "mode": { "dark": "{primitive.neutral.50}" } } },
+    "destructive":           { "$type": "color", "$value": "{primitive.red.light}",     "$extensions": { "mode": { "dark": "{primitive.red.dark}" } } },
+    "border":                { "$type": "color", "$value": "{primitive.neutral.200}",   "$extensions": { "mode": { "dark": "{primitive.white-a10}" } } },
+    "input":                 { "$type": "color", "$value": "{primitive.neutral.200}",   "$extensions": { "mode": { "dark": "{primitive.white-a15}" } } },
+    "ring":                  { "$type": "color", "$value": "{primitive.neutral.400}",   "$description": "Neutral focus signal", "$extensions": { "mode": { "dark": "{primitive.neutral.500}" } } }
   },
 
   "component": {
@@ -102,7 +98,7 @@
       "focus-ring":     { "$type": "color", "$value": "{semantic.ring}" }
     },
     "switch": {
-      "track-on":     { "$type": "color", "$value": "{semantic.primary}",    "$description": "Checked track fill (Apple blue)" },
+      "track-on":     { "$type": "color", "$value": "{semantic.primary}",    "$description": "Checked track fill" },
       "track-off":    { "$type": "color", "$value": "{semantic.input}",      "$description": "Unchecked track fill" },
       "thumb":        { "$type": "color", "$value": "{semantic.background}",  "$description": "Sliding knob" },
       "focus-ring":   { "$type": "color", "$value": "{semantic.ring}" },
@@ -132,7 +128,7 @@
     },
     "checkbox": {
       "border":       { "$type": "color", "$value": "{semantic.input}" },
-      "checked-bg":   { "$type": "color", "$value": "{semantic.primary}",            "$description": "Checked box fill + border (Apple blue)" },
+      "checked-bg":   { "$type": "color", "$value": "{semantic.primary}",            "$description": "Checked box fill + border" },
       "checked-fg":   { "$type": "color", "$value": "{semantic.primary-foreground}",  "$description": "Check glyph" },
       "focus-ring":   { "$type": "color", "$value": "{semantic.ring}" },
       "invalid-ring": { "$type": "color", "$value": "{semantic.destructive}" }
@@ -147,7 +143,7 @@
     },
     "slider": {
       "track":        { "$type": "color", "$value": "{semantic.muted}",  "$description": "Unfilled rail" },
-      "range":        { "$type": "color", "$value": "{semantic.primary}", "$description": "Filled portion (Apple blue)" },
+      "range":        { "$type": "color", "$value": "{semantic.primary}", "$description": "Filled portion" },
       "thumb-bg":     { "$type": "color", "$value": "{primitive.white}",  "$description": "Knob fill (constant white, both modes)" },
       "thumb-border": { "$type": "color", "$value": "{semantic.ring}" },
       "focus-ring":   { "$type": "color", "$value": "{semantic.ring}" }
@@ -362,7 +358,7 @@
       "description": { "$type": "color", "$value": "{semantic.muted-foreground}" }
     },
     "calendar": {
-      "selected-bg": { "$type": "color", "$value": "{semantic.primary}",            "$description": "Selected day (Apple blue)" },
+      "selected-bg": { "$type": "color", "$value": "{semantic.primary}",            "$description": "Selected day" },
       "selected-fg": { "$type": "color", "$value": "{semantic.primary-foreground}" },
       "today-bg":    { "$type": "color", "$value": "{semantic.accent}",             "$description": "Today marker" },
       "range-bg":    { "$type": "color", "$value": "{semantic.accent}",             "$description": "In-range days" },

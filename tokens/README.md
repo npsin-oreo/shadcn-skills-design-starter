@@ -1,16 +1,17 @@
-# Design Tokens — DTCG 3-tier (Apple design language)
+# Design Tokens — DTCG 3-tier (neutral base)
 
 W3C **DTCG**-format design tokens for this project, in the canonical 3-tier
-architecture. Direction applied via the `apply-aesthetic` skill → **Apple**
-(action blue `#0071e3`, near-black ink `#1d1d1f`, pale gray `#f5f5f7`, graphite
-darks, soft 12px geometry, SF/system type).
+architecture. The base is the **shadcn neutral** theme (OKLCH), in sync with the
+Figma neutral collection. This is a starting tool — apply a brand on top with the
+`apply-aesthetic` skill (see [`../docs/applying-a-brand.md`](../docs/applying-a-brand.md)),
+which re-points the primitive + semantic layers only.
 
 ## The three tiers
 
 ```
 Primitive  →  Semantic  →  Component
 raw palette   purpose roles  component-scoped
-(#0071e3)      (primary)      (button.default-bg)
+(neutral/900)  (primary)      (button.default-bg)
 ```
 
 | Tier | Lives in | Rule |
@@ -22,9 +23,9 @@ raw palette   purpose roles  component-scoped
 ## Files
 
 - `color.tokens.json` — palette → roles → button/field/dialog colors
-- `dimension.tokens.json` — radius scale (12px Apple-soft base)
+- `dimension.tokens.json` — radius scale (10px shadcn-neutral base)
 - `motion.tokens.json` — durations + easings + per-component transitions
-- `typography.tokens.json` — font families (Apple system stack), weights, sizes
+- `typography.tokens.json` — font families (Geist sans), weights, sizes
 
 ## Build
 
@@ -45,9 +46,16 @@ tool-portable definition of the same system.
 
 ## Accessibility
 
-Every mapped text/UI color pair is verified **WCAG 2.2 AA** with
-`.claude/skills/_resources/scripts/contrast.py` (e.g. white on `#0071e3` =
-4.70:1; `#6e6e73` on white = 5.07:1; `#86868b` on black = 5.80:1).
+Every mapped text/UI color pair is verified **WCAG 2.2 AA**. The neutral base uses
+the shadcn neutral OKLCH scale (e.g. `--foreground` oklch(0.145) on `--background`
+oklch(1) ≈ 19:1; `--muted-foreground` oklch(0.556) on white ≈ 4.6:1). When you
+apply a brand, re-verify each pair — the `apply-aesthetic` skill checks contrast
+as part of the re-point.
 
-> Note: this Apple direction intentionally diverges from the original
-> Figma-synced neutral theme (a deliberate `apply-aesthetic` re-point).
+## Branding
+
+The neutral base is intentionally unopinionated. To give a project a look, apply a
+named design system (apple, linear, stripe, vercel…) or a custom brand with the
+`apply-aesthetic` skill — it re-points the primitive + semantic tiers (and
+`globals.css` `:root`/`.dark`) while leaving components and the component tier
+untouched. See [`../docs/applying-a-brand.md`](../docs/applying-a-brand.md).

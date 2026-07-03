@@ -153,7 +153,7 @@
       <span class="step"><span class="n">1</span> Scaffold</span>
       <span class="step"><span class="n">2</span> Tokens</span>
       <span class="step"><span class="n">3</span> Components</span>
-      <span class="step"><span class="n">4</span> Aesthetic</span>
+      <span class="step"><span class="n">4</span> Brand</span>
       <span class="step"><span class="n">5</span> Docs</span>
       <span class="step"><span class="n">6</span> CI</span>
       <span class="step"><span class="n">7</span> Figma sync</span>
@@ -303,25 +303,25 @@ Popover/Command/Calendar/Table. Semantic token classes only; no hex, no text-gra
       <!-- P4 -->
       <article class="phase">
         <div class="node">4</div>
-        <div class="kicker">Phase 4</div>
-        <h2>Apply the aesthetic (Apple)</h2>
-        <p class="goal">Move the neutral theme to a branded look by editing <b>only tokens</b> — no component code.</p>
+        <div class="kicker">Phase 4 · optional</div>
+        <h2>Apply a brand</h2>
+        <p class="goal">The base ships <b>neutral</b>. Give it a look by editing <b>only tokens</b> — no component code. <code>apple</code> below is one of 138 example systems.</p>
         <div class="prompt">
           <div class="bar"><span class="dot"></span><span class="dot"></span><span class="dot"></span><span class="lbl">prompt · skill: apply-aesthetic</span></div>
-          <pre><code>Using <b>apply-aesthetic</b>, apply the `apple` aesthetic: re-point the SEMANTIC tokens
-(background/foreground/primary/muted-foreground/destructive/border/ring + chart ramp
-+ sidebar) to Apple values in BOTH light and dark, editing only tokens/*.tokens.json
-and globals.css. Verify every foreground/background pair meets WCAG 2.2 AA and
-annotate the ratios. Do NOT change any components/ui file. Then run tokens:build.</code></pre>
+          <pre><code>Using <b>apply-aesthetic</b>, apply the `&lt;brand&gt;` aesthetic on top of the neutral base:
+re-point the primitive + SEMANTIC tokens (background/foreground/primary/…/ring + chart
+ramp + sidebar) in tokens/*.tokens.json AND globals.css :root/.dark, in BOTH light and
+dark. Update the font in layout.tsx if the brand calls for it. Verify every fg/bg pair
+meets WCAG 2.2 AA. Do NOT change any components/ui file. Then run tokens:build.</code></pre>
         </div>
         <div class="row">
-          <div class="produces"><span class="k">Produces</span>
+          <div class="produces"><span class="k">Produces (e.g. apple)</span>
             <ul><li>--primary #0071e3</li><li>--muted-foreground #6e6e73</li><li>WCAG-annotated</li></ul>
           </div>
-          <div class="gate"><span class="k">Gate 4</span><p><span class="chk">✓</span> all text pairs pass AA · app restyles · <b>zero</b> component diff.</p></div>
+          <div class="gate"><span class="k">Gate 4</span><p><span class="chk">✓</span> all text pairs pass AA · app restyles · <b>zero</b> component diff. Skip to ship neutral.</p></div>
         </div>
         <div class="output">
-          <div class="oh">output <span class="fname">app/globals.css · :root</span></div>
+          <div class="oh">example — apple brand <span class="fname">app/globals.css · :root</span></div>
           <pre><code>:root {
   --primary: <span class="tok">#0071e3</span>;          <span class="cm">/* white text 4.70:1 */</span>
   --muted-foreground: <span class="tok">#6e6e73</span>; <span class="cm">/* 5.07:1 on white  */</span>
@@ -434,7 +434,7 @@ Plugin API (use_figma), not REST (Enterprise-gated); text can't be automated.</c
     </div>
     <div class="traps">
       <div class="trap"><b>Two Figma channels aren't interchangeable.</b> <span>REST reads structure; variable <i>values</i> are Enterprise-only over REST — use MCP <code>get_variable_defs</code>. Writes go through the Plugin API, never REST.</span></div>
-      <div class="trap"><b>A committed <code>variables-export.json</code> goes stale.</b> <span>Trust live Figma (MCP) for parity — the snapshot can still say "neutral" long after the live file went Apple.</span></div>
+      <div class="trap"><b>A committed <code>variables-export.json</code> goes stale.</b> <span>Trust live Figma (MCP) for parity — the snapshot can drift from the live file after a brand re-point.</span></div>
       <div class="trap"><b>A raw node dump over-reports drift.</b> <span>Colours on <code>visible:false</code> nodes and instance interiors don't render — filter them, or you'll "fix" things nobody sees.</span></div>
       <div class="trap"><b>Variant audits attribute per-page, not per-component.</b> <span>A <code>Type=Outline</code> found on the Spinner page may belong to a Button composed there. Open the node before "fixing."</span></div>
       <div class="trap"><b>Tokens are generated.</b> <span>Edit <code>tokens/*.json</code> then <code>tokens:build</code> — never hand-edit the generated CSS (CI fails on drift). PATs expire; keep the live one in gitignored <code>.env.local</code>.</span></div>
@@ -457,8 +457,8 @@ Plugin API (use_figma), not REST (Enterprise-gated); text can't be automated.</c
         <ul><li>4 DTCG files · <code>tokens:build</code> reproducible · semantics alias primitives</li></ul></div>
       <div class="grp"><div class="lbl">3 · Components</div>
         <ul><li>52 owned primitives · combobox/data-table/date-picker · no hardcoded colour</li></ul></div>
-      <div class="grp"><div class="lbl">4 · Aesthetic</div>
-        <ul><li>Apple tokens (light + dark) · all text pairs AA · no component diff</li></ul></div>
+      <div class="grp"><div class="lbl">4 · Brand (optional)</div>
+        <ul><li>(optional) brand tokens (light + dark) · all text pairs AA · no component diff</li></ul></div>
       <div class="grp"><div class="lbl">5 · Docs + Storybook</div>
         <ul><li>a11y <code>test:'error'</code> · 55 MDX = 55 stories = component count · <code>test-storybook</code> green</li></ul></div>
       <div class="grp"><div class="lbl">6 · Audit + CI</div>
@@ -471,7 +471,7 @@ Plugin API (use_figma), not REST (Enterprise-gated); text can't be automated.</c
 
 <footer>
   <div class="wrap">
-    <div class="mapline">0 foundations → 1 scaffold → 2 tokens → 3 components → 4 aesthetic → 5 docs+storybook → 6 audit+CI → 7 figma sync</div>
+    <div class="mapline">0 foundations → 1 scaffold → 2 tokens → 3 components → 4 brand (optional) → 5 docs+storybook → 6 audit+CI → 7 figma sync</div>
     Each arrow is a green gate. Teach the gates, not just the prompts — the gate is what makes the next prompt safe. · Source: <code>docs/BUILD-FROM-ZERO.md</code>
   </div>
 </footer>

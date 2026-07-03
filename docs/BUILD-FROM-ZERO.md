@@ -9,7 +9,7 @@ to give Claude Code, what it **produces**, and a **gate** (how you know it's don
 > phase assumes the earlier gate is green.
 
 **Definition of done (the target):** 52 `components/ui/*`, 55 MDX docs + 55 manual stories (1:1),
-4 `tokens/*.tokens.json` DTCG files → generated CSS, an Apple-re-pointed theme verified WCAG AA,
+4 `tokens/*.tokens.json` DTCG files → generated CSS, a neutral base (brand-ready) verified WCAG AA,
 a Storybook explorer with an a11y gate, `npm run audit` (Figma↔code) + `npm run figma:parity`
 tooling, and CI with 4 gates.
 
@@ -133,22 +133,25 @@ standalone primitive file). Use only semantic token classes; no hex, no text-gra
 
 ---
 
-## Phase 4 — Apply the aesthetic (re-point to Apple)
+## Phase 4 (optional) — Apply a brand
 
-**Goal:** move the neutral theme to a branded look **without touching component code** — only tokens.
+**Goal:** give the neutral base a look **without touching component code** — only tokens. The base
+ships neutral on purpose; this phase is how you brand a real project. `apple` below is just one
+example of the 138 named systems the skill knows. Full guide: [`applying-a-brand.md`](applying-a-brand.md).
 
 **Prompt** (uses `apply-aesthetic`):
 ```text
-Using the apply-aesthetic skill, apply the `apple` aesthetic: re-point the SEMANTIC tokens
-(background/foreground/primary/muted-foreground/destructive/border/ring + chart ramp + sidebar) to
-Apple values in BOTH light and dark, editing only tokens/*.tokens.json and globals.css. Verify every
-foreground/background pair meets WCAG 2.2 AA and annotate the ratios in comments. Do NOT change any
+Using the apply-aesthetic skill, apply the `<brand>` aesthetic on top of the neutral base: re-point
+the primitive + SEMANTIC tokens (background/foreground/primary/muted-foreground/destructive/border/
+ring + chart ramp + sidebar) in tokens/*.tokens.json AND globals.css :root/.dark, in BOTH light and
+dark. Update the font in app/layout.tsx + typography tokens if the brand calls for it. Verify every
+foreground/background pair meets WCAG 2.2 AA and annotate the ratios. Do NOT change any
 components/ui file. Then run tokens:build.
 ```
 
-**Produces:** Apple-valued semantic tokens (e.g. `--primary #0071e3`, `--muted-foreground #6e6e73`),
-WCAG-annotated. (Note: this makes the *code* theme diverge from a *neutral* Figma export — the
-**live** Figma variables should be re-pointed to match; see Phase 7.)
+**Produces:** re-pointed semantic tokens (e.g. for `apple`: `--primary #0071e3`,
+`--muted-foreground #6e6e73`), WCAG-annotated. Every component reskins because it reads semantic
+classes — zero component edits. Skip this phase entirely to ship the neutral base.
 
 > **Gate 4:** contrast check passes AA for all text pairs; the app restyles but no component diff.
 
@@ -230,7 +233,7 @@ load limit); mind per-page variant attribution.
   Enterprise-only over REST** — use MCP `get_variable_defs` / `getLocalVariablesAsync`. Writes go
   through the MCP **Plugin API**, never REST.
 - **A committed `variables-export.json` goes stale.** Trust the **live** Figma (MCP) for parity, not
-  a snapshot — the snapshot can still say "neutral" long after the live file went Apple.
+  a snapshot — the snapshot can drift from the live file after a brand re-point.
 - **A raw node dump over-reports drift.** Colours on `visible:false` nodes and instance interiors
   don't render — filter them, or you'll "fix" things nobody sees.
 - **Variant audits attribute per-page, not per-component.** A `Type=Outline` found on the Spinner
@@ -244,7 +247,7 @@ load limit); mind per-page variant attribution.
 ## One-line phase map
 
 `Phase 0 foundations (skills + CLAUDE.md + Figma access)` → `1 scaffold` → `2 tokens (source of
-truth)` → `3 components` → `4 aesthetic (Apple, WCAG)` → `5 docs + Storybook + a11y` → `6 audit +
+truth)` → `3 components` → `4 brand (optional, WCAG)` → `5 docs + Storybook + a11y` → `6 audit +
 CI` → `7 Figma parity + push runbook`.
 
 Each arrow is a green gate. Teach the gates, not just the prompts — the gate is what makes the next
@@ -278,8 +281,8 @@ Tick top-to-bottom; don't start a phase until the one above is fully checked.
 - [ ] combobox / data-table / date-picker composition examples
 - [ ] `npx tsc --noEmit` clean; no hex/`text-gray-*` outside `components/ui`
 
-**Phase 4 — Aesthetic (Apple)**
-- [ ] Semantic tokens re-pointed to Apple (light + dark), only tokens/globals edited
+**Phase 4 — Brand (optional)**
+- [ ] (optional) Semantic tokens re-pointed to a brand (light + dark), only tokens/globals edited
 - [ ] All text pairs pass WCAG 2.2 AA (ratios annotated)
 
 **Phase 5 — Docs + Storybook**
