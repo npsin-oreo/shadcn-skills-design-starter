@@ -1,0 +1,477 @@
+<title>Build a design-system repo from zero — Claude Code playbook</title>
+<style>
+  :root{
+    --bg:#ffffff; --panel:#f5f5f7; --panel-line:#ececef;
+    --ink:#1d1d1f; --muted:#6e6e73; --line:#d2d2d7; --line-soft:#e4e4e7;
+    --accent:#0071e3; --accent-weak:rgba(0,113,227,.10); --accent-line:rgba(0,113,227,.28);
+    --good:#248a3d; --good-weak:rgba(36,138,61,.10);
+    --warn:#b25000; --warn-weak:rgba(178,80,0,.09);
+    --term:#1d1d1f; --term-ink:#e8e8ea; --term-muted:#9a9aa0; --term-line:#33333a;
+    --sans:-apple-system,BlinkMacSystemFont,"SF Pro Display","SF Pro Text","Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    --mono:ui-monospace,"SF Mono","JetBrains Mono","Cascadia Code",Menlo,Consolas,monospace;
+    --maxw:52rem;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--sans);
+    font-size:16px;line-height:1.6;-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility;}
+  .wrap{max-width:var(--maxw);margin:0 auto;padding:0 1.5rem;}
+  a{color:var(--accent);text-decoration:none}
+  a:hover{text-decoration:underline}
+  code{font-family:var(--mono);font-size:.86em;background:var(--panel);border:1px solid var(--panel-line);
+    padding:.08em .38em;border-radius:5px;color:#0a0a0c;white-space:nowrap;}
+  .eyebrow{font-family:var(--mono);font-size:.72rem;letter-spacing:.16em;text-transform:uppercase;
+    color:var(--muted);font-weight:600;}
+  h1,h2,h3{text-wrap:balance;font-weight:680;letter-spacing:-.02em;line-height:1.12;margin:0;}
+
+  /* ---------- header ---------- */
+  header.top{border-bottom:1px solid var(--line);background:
+    radial-gradient(120% 80% at 85% -10%, var(--accent-weak), transparent 60%);}
+  .top-inner{padding:3.4rem 0 2.4rem;}
+  h1{font-size:clamp(2rem,5.2vw,3rem);margin:.7rem 0 0;}
+  .lede{font-size:clamp(1.05rem,2.2vw,1.22rem);color:#3a3a3d;max-width:40ch;margin:1rem 0 0;line-height:1.5;}
+  .meta{display:flex;flex-wrap:wrap;gap:.5rem;margin-top:1.6rem;}
+  .chip{font-family:var(--mono);font-size:.72rem;letter-spacing:.02em;color:#3a3a3d;
+    background:var(--panel);border:1px solid var(--line);padding:.3rem .6rem;border-radius:999px;}
+
+  /* ---------- stepper ---------- */
+  .stepper{display:flex;flex-wrap:wrap;gap:.4rem;margin:2rem 0 0;padding-top:1.6rem;border-top:1px solid var(--line-soft);}
+  .step{display:flex;align-items:center;gap:.5rem;font-family:var(--mono);font-size:.74rem;color:var(--muted);
+    background:var(--panel);border:1px solid var(--panel-line);border-radius:8px;padding:.34rem .55rem;}
+  .step b{color:var(--ink);font-weight:700}
+  .step .n{display:inline-grid;place-items:center;width:1.2rem;height:1.2rem;border-radius:5px;
+    background:var(--ink);color:#fff;font-size:.68rem;font-weight:700;}
+
+  /* ---------- legend ---------- */
+  .legend{display:grid;grid-template-columns:repeat(auto-fit,minmax(9.5rem,1fr));gap:.75rem;margin:2.4rem 0 .5rem;}
+  .legend .cell{border:1px solid var(--line-soft);border-radius:10px;padding:.7rem .8rem;background:#fff;}
+  .legend .k{font-family:var(--mono);font-size:.68rem;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);}
+  .legend .v{font-size:.82rem;color:#3a3a3d;margin-top:.2rem;line-height:1.4;}
+
+  /* ---------- phase spine ---------- */
+  .phases{position:relative;margin:2.4rem 0 0;padding-left:2.6rem;}
+  .phases::before{content:"";position:absolute;left:.86rem;top:.4rem;bottom:2.2rem;width:2px;
+    background:linear-gradient(var(--line),var(--line) 70%,transparent);}
+  .phase{position:relative;padding:0 0 2.2rem;}
+  .node{position:absolute;left:-2.6rem;top:-.1rem;width:1.85rem;height:1.85rem;border-radius:9px;
+    background:#fff;border:1.5px solid var(--line);color:var(--ink);font-family:var(--mono);font-weight:700;
+    font-size:.9rem;display:grid;place-items:center;z-index:1;}
+  .phase.foundations .node{background:var(--ink);color:#fff;border-color:var(--ink);}
+  .phase h2{font-size:1.34rem;}
+  .phase .goal{color:#3a3a3d;margin:.35rem 0 0;}
+  .kicker{font-family:var(--mono);font-size:.7rem;letter-spacing:.12em;text-transform:uppercase;color:var(--accent);font-weight:600;}
+
+  /* ---------- prompt terminal ---------- */
+  .prompt{margin:1rem 0 0;background:var(--term);border:1px solid var(--term-line);border-radius:12px;overflow:hidden;
+    box-shadow:0 1px 0 rgba(0,0,0,.04),0 12px 30px -18px rgba(0,0,0,.5);}
+  .prompt .bar{display:flex;align-items:center;gap:.45rem;padding:.6rem .8rem;border-bottom:1px solid var(--term-line);}
+  .prompt .bar .dot{width:.62rem;height:.62rem;border-radius:50%;background:#3a3a42;}
+  .prompt .bar .lbl{margin-left:.4rem;font-family:var(--mono);font-size:.68rem;letter-spacing:.1em;
+    text-transform:uppercase;color:var(--term-muted);}
+  .prompt pre{margin:0;padding:.95rem 1rem 1.05rem;overflow-x:auto;}
+  .prompt code{all:unset;font-family:var(--mono);font-size:.8rem;line-height:1.62;color:var(--term-ink);
+    white-space:pre-wrap;word-break:normal;overflow-wrap:anywhere;display:block;}
+  .prompt code b{color:#7fb4ff;font-weight:600;} /* highlight tool/skill names */
+
+  /* ---------- output example (light, distinct from the dark prompt) ---------- */
+  .output{margin-top:.9rem;border:1px solid var(--line-soft);border-radius:10px;overflow:hidden;background:#fcfcfd;}
+  .output .oh{display:flex;align-items:center;gap:.5rem;padding:.4rem .7rem;border-bottom:1px solid var(--line-soft);
+    background:var(--panel);font-family:var(--mono);font-size:.64rem;letter-spacing:.11em;text-transform:uppercase;color:var(--muted);}
+  .output .oh::before{content:"";width:.5rem;height:.5rem;border-radius:2px;background:var(--good);flex:none;}
+  .output .oh .fname{margin-left:auto;text-transform:none;letter-spacing:0;color:#3a3a3d;font-size:.72rem;}
+  .output pre{margin:0;padding:.7rem .85rem;overflow-x:auto;}
+  .output code{all:unset;font-family:var(--mono);font-size:.735rem;line-height:1.62;color:#2a2a2d;white-space:pre;display:block;}
+  .output .cm{color:var(--muted);} .output .ok{color:var(--good);font-weight:600;} .output .tok{color:var(--accent);}
+
+  /* ---------- produces + gate ---------- */
+  .row{display:flex;flex-wrap:wrap;gap:.8rem;margin-top:1rem;}
+  .produces{flex:1 1 15rem;min-width:14rem;}
+  .produces .k,.gate .k{font-family:var(--mono);font-size:.66rem;letter-spacing:.1em;text-transform:uppercase;
+    color:var(--muted);display:block;margin-bottom:.4rem;}
+  .produces ul{margin:0;padding:0;list-style:none;display:flex;flex-wrap:wrap;gap:.34rem;}
+  .produces li{font-family:var(--mono);font-size:.72rem;color:#0a0a0c;background:var(--panel);
+    border:1px solid var(--panel-line);border-radius:6px;padding:.22rem .46rem;}
+  .gate{flex:1 1 15rem;min-width:14rem;background:var(--good-weak);border:1px solid rgba(36,138,61,.22);
+    border-radius:10px;padding:.7rem .85rem;}
+  .gate .k{color:var(--good);}
+  .gate p{margin:0;font-size:.86rem;color:#1f5c33;line-height:1.45;}
+  .gate .chk{color:var(--good);font-weight:700;}
+
+  /* ---------- callouts ---------- */
+  .why{margin-top:.9rem;font-size:.85rem;color:var(--muted);border-left:2px solid var(--accent-line);
+    padding:.15rem 0 .15rem .8rem;}
+  .why b{color:var(--ink);}
+
+  /* ---------- traps ---------- */
+  .section-head{margin:1rem 0 1.2rem;}
+  .traps{display:grid;gap:.7rem;}
+  .trap{border:1px solid var(--line-soft);border-left:3px solid var(--warn);border-radius:10px;
+    padding:.75rem .9rem;background:var(--warn-weak);}
+  .trap b{color:#7a3800;}
+  .trap span{color:#4a4a4d;}
+
+  /* ---------- checklist ---------- */
+  .check{background:var(--panel);border:1px solid var(--panel-line);border-radius:14px;padding:1.3rem 1.4rem;}
+  .check h3{font-size:1.05rem;margin-bottom:.2rem;}
+  .check .grp{margin-top:1rem;}
+  .check .grp>.lbl{font-family:var(--mono);font-size:.72rem;letter-spacing:.06em;color:var(--accent);font-weight:600;text-transform:uppercase;}
+  .check ul{margin:.45rem 0 0;padding:0;list-style:none;display:grid;gap:.3rem;}
+  .check li{position:relative;padding-left:1.5rem;font-size:.86rem;color:#2f2f31;line-height:1.4;}
+  .check li::before{content:"";position:absolute;left:0;top:.16em;width:1rem;height:1rem;border-radius:4px;
+    border:1.5px solid var(--line);background:#fff;}
+
+  section{padding:2.8rem 0;border-top:1px solid var(--line-soft);}
+  section:first-of-type{border-top:0}
+  .rule{color:var(--muted);font-size:.9rem;background:var(--accent-weak);border:1px solid var(--accent-line);
+    border-radius:10px;padding:.75rem .9rem;margin:1.4rem 0 0;}
+  .rule b{color:var(--ink);}
+  footer{border-top:1px solid var(--line);padding:2rem 0 3rem;color:var(--muted);font-size:.8rem;}
+  footer .mapline{font-family:var(--mono);font-size:.72rem;color:#3a3a3d;line-height:1.9;margin-bottom:1rem;overflow-x:auto;white-space:nowrap;}
+  @media (max-width:560px){ .phases{padding-left:2.1rem} .node{left:-2.1rem;width:1.6rem;height:1.6rem} .phases::before{left:.72rem} }
+  @media (prefers-reduced-motion:no-preference){
+    .phase{opacity:0;transform:translateY(10px);animation:rise .5s ease forwards;}
+    .phase:nth-child(1){animation-delay:.02s}.phase:nth-child(2){animation-delay:.06s}
+    .phase:nth-child(3){animation-delay:.1s}.phase:nth-child(4){animation-delay:.14s}
+    @keyframes rise{to{opacity:1;transform:none}}
+  }
+</style>
+
+<header class="top">
+  <div class="wrap top-inner">
+    <div class="eyebrow">Claude Code · design-system playbook</div>
+    <h1>Build this repo from&nbsp;zero</h1>
+    <p class="lede">A Next.js&nbsp;+ Tailwind&nbsp;v4&nbsp;+ shadcn/ui app driven by a Figma
+      design system — reconstructed from an empty folder, one prompt at a time.</p>
+    <div class="meta">
+      <span class="chip">Next.js · App Router</span>
+      <span class="chip">Tailwind v4</span>
+      <span class="chip">shadcn/ui</span>
+      <span class="chip">DTCG tokens</span>
+      <span class="chip">Figma ↔ code</span>
+    </div>
+    <div class="stepper" aria-label="phase map">
+      <span class="step"><span class="n">0</span> Foundations</span>
+      <span class="step"><span class="n">1</span> Scaffold</span>
+      <span class="step"><span class="n">2</span> Tokens</span>
+      <span class="step"><span class="n">3</span> Components</span>
+      <span class="step"><span class="n">4</span> Aesthetic</span>
+      <span class="step"><span class="n">5</span> Docs</span>
+      <span class="step"><span class="n">6</span> CI</span>
+      <span class="step"><span class="n">7</span> Figma sync</span>
+    </div>
+  </div>
+</header>
+
+<div class="wrap">
+  <section>
+    <p class="rule"><b>Golden rule — order follows dependency, not enthusiasm.</b> Tokens before
+      components. Components before docs. Docs before gates. Gates before Figma round-tripping.
+      Every later phase assumes the earlier <b>gate</b> is green.</p>
+    <div class="legend" aria-hidden="true">
+      <div class="cell"><div class="k">Goal</div><div class="v">what the phase is for</div></div>
+      <div class="cell"><div class="k">Prompt</div><div class="v">paste into Claude Code, verbatim</div></div>
+      <div class="cell"><div class="k">Produces</div><div class="v">files it creates</div></div>
+      <div class="cell"><div class="k">Gate</div><div class="v">pass this before moving on</div></div>
+      <div class="cell"><div class="k">Output</div><div class="v">a real snippet from this repo</div></div>
+    </div>
+
+    <div class="phases">
+
+      <!-- P0 -->
+      <article class="phase foundations">
+        <div class="node">0</div>
+        <div class="kicker">Do this before you prompt anything</div>
+        <h2>Foundations</h2>
+        <p class="goal">The inputs. Get them wrong and every later phase fights you.</p>
+        <div class="prompt">
+          <div class="bar"><span class="dot"></span><span class="dot"></span><span class="dot"></span><span class="lbl">set up, then prompt</span></div>
+          <pre><code>Read the <b>shadcn-ui-design</b> skill. Then write a CLAUDE.md that states the stack
+(Next.js App Router, React 19, Tailwind v4, shadcn/ui owned in components/ui,
+next-themes, lucide), the non-negotiable rules (NEVER hardcode colours — semantic
+token classes only; 4px spacing scale; size-4 not w-4 h-4; Server Components by
+default), the Figma variable→Tailwind class map, and the Figma MCP flow
+(get_design_context → get_variable_defs → get_screenshot → map 1:1 → build →
+validate). Point to the skill's DESIGN.md + components.md.</code></pre>
+        </div>
+        <div class="row">
+          <div class="produces"><span class="k">Also set up</span>
+            <ul><li>Node ≥ 20.12</li><li>Figma MCP (/mcp)</li><li>REST PAT → .env.local</li><li>skills vendored</li><li>CLAUDE.md</li></ul>
+          </div>
+          <div class="gate"><span class="k">Gate 0</span><p><span class="chk">✓</span> <code>whoami</code> = right seat · PAT hits <code>/v1/files/:key</code> → 200 · DESIGN.md present · CLAUDE.md bans hardcoded colour.</p></div>
+        </div>
+        <div class="output">
+          <div class="oh">output <span class="fname">CLAUDE.md</span></div>
+          <pre><code><span class="cm">## Design System Rules</span>
+- <span class="tok">never hardcode colors.</span> Use semantic token classes
+  only: bg-card · text-muted-foreground · bg-primary
+  <span class="cm">No hex. No text-gray-500.</span></code></pre>
+        </div>
+        <p class="why"><b>Two Figma channels, both needed:</b> MCP (OAuth, Full seat) for screenshots + writes; a REST PAT for the scripts. Variable <i>values</i> over REST are Enterprise-only — expected.</p>
+      </article>
+
+      <!-- P1 -->
+      <article class="phase">
+        <div class="node">1</div>
+        <div class="kicker">Phase 1</div>
+        <h2>Scaffold the app</h2>
+        <p class="goal">A running App Router app with Tailwind v4 + shadcn/ui wired to CSS-variable tokens.</p>
+        <div class="prompt">
+          <div class="bar"><span class="dot"></span><span class="dot"></span><span class="dot"></span><span class="lbl">prompt</span></div>
+          <pre><code>Scaffold a Next.js 16 (App Router) + React 19 + TypeScript app with Tailwind CSS v4
+and shadcn/ui (neutral base, CSS variables, @/ aliases). Add next-themes with a
+ThemeProvider + Toaster in the root layout, Geist + Geist Mono via next/font, and a
+demo page.tsx showing the semantic tokens. Create components.json, tsconfig aliases,
+components/providers/theme-provider.tsx, lib/utils.ts (cn). Follow CLAUDE.md.</code></pre>
+        </div>
+        <div class="row">
+          <div class="produces"><span class="k">Produces</span>
+            <ul><li>app/{layout,page,globals}</li><li>components.json</li><li>theme-provider.tsx</li><li>lib/utils.ts</li></ul>
+          </div>
+          <div class="gate"><span class="k">Gate 1</span><p><span class="chk">✓</span> <code>npm run dev</code> serves · <code>tsc --noEmit</code> clean · demo uses <code>bg-background</code> — zero hex.</p></div>
+        </div>
+        <div class="output">
+          <div class="oh">output <span class="fname">app/globals.css</span></div>
+          <pre><code>@layer base {
+  body { @apply <span class="tok">bg-background text-foreground</span>; }
+}</code></pre>
+        </div>
+      </article>
+
+      <!-- P2 -->
+      <article class="phase">
+        <div class="node">2</div>
+        <div class="kicker">Phase 2 · the source of truth</div>
+        <h2>Tokens (DTCG, 3-tier)</h2>
+        <p class="goal">Tokens live in <code>tokens/*.tokens.json</code> and <b>generate</b> the CSS — never hand-edited.</p>
+        <div class="prompt">
+          <div class="bar"><span class="dot"></span><span class="dot"></span><span class="dot"></span><span class="lbl">prompt · skills: design-tokens, token-build</span></div>
+          <pre><code>Using <b>design-tokens</b> + <b>token-build</b>: pull the Figma variables and author them as
+DTCG tokens in tokens/ with the 3-tier architecture (primitive → semantic →
+component), split into color, dimension, typography, motion. Write
+scripts/build-tokens.mjs → app/tokens.generated.css, where semantic aliases resolve
+to var(--role) so they stay light/dark aware. Wire "tokens:build" and make "build"
+run it first. Semantic vars must alias primitives, never hold raw values.</code></pre>
+        </div>
+        <div class="row">
+          <div class="produces"><span class="k">Produces</span>
+            <ul><li>tokens/*.tokens.json ×4</li><li>build-tokens.mjs</li><li>tokens.generated.css</li></ul>
+          </div>
+          <div class="gate"><span class="k">Gate 2</span><p><span class="chk">✓</span> <code>tokens:build</code> reproducible (no diff on re-run — CI enforces) · semantics alias primitives.</p></div>
+        </div>
+        <div class="output">
+          <div class="oh">output <span class="fname">tokens/color.tokens.json</span></div>
+          <pre><code><span class="cm">"primitive"</span>: {
+  "blue": { "action": { "$value": <span class="tok">"#0071e3"</span> } }
+},
+<span class="cm">"semantic"</span>: {
+  "primary": { "$value": <span class="tok">"{primitive.blue.action}"</span> }
+}</code></pre>
+        </div>
+        <p class="why"><b>Why now:</b> components bind to these token names. Build a component before its token exists and it hardcodes a value — the exact thing CI later fails on.</p>
+      </article>
+
+      <!-- P3 -->
+      <article class="phase">
+        <div class="node">3</div>
+        <div class="kicker">Phase 3</div>
+        <h2>Components — own them, don't wrap</h2>
+        <p class="goal">All shadcn/ui primitives installed; composite patterns documented.</p>
+        <div class="prompt">
+          <div class="bar"><span class="dot"></span><span class="dot"></span><span class="dot"></span><span class="lbl">prompt</span></div>
+          <pre><code>Add every shadcn/ui primitive via `npx shadcn@latest add …` into components/ui/ (own
+them — edit in place, never wrap). Close the gap vs the Figma set: add sm/md/xl size
+variants to core form controls, and build the composition patterns — combobox,
+data-table (real TanStack Table), date-picker — as composed examples reusing
+Popover/Command/Calendar/Table. Semantic token classes only; no hex, no text-gray-*.</code></pre>
+        </div>
+        <div class="row">
+          <div class="produces"><span class="k">Produces</span>
+            <ul><li>52 × components/ui/*</li><li>hooks/</li><li>TanStack · cmdk · day-picker</li></ul>
+          </div>
+          <div class="gate"><span class="k">Gate 3</span><p><span class="chk">✓</span> every primitive renders · <code>tsc</code> clean · no hex / <code>text-gray-*</code> outside <code>components/ui</code>.</p></div>
+        </div>
+        <div class="output">
+          <div class="oh">output <span class="fname">components/ui/button.tsx</span></div>
+          <pre><code>const buttonVariants = cva("… rounded-lg …", {
+  variants: { variant: {
+    default: <span class="tok">"bg-primary text-primary-foreground …"</span>,
+    outline: <span class="tok">"border-border bg-background hover:bg-muted"</span>,
+  }}
+})</code></pre>
+        </div>
+      </article>
+
+      <!-- P4 -->
+      <article class="phase">
+        <div class="node">4</div>
+        <div class="kicker">Phase 4</div>
+        <h2>Apply the aesthetic (Apple)</h2>
+        <p class="goal">Move the neutral theme to a branded look by editing <b>only tokens</b> — no component code.</p>
+        <div class="prompt">
+          <div class="bar"><span class="dot"></span><span class="dot"></span><span class="dot"></span><span class="lbl">prompt · skill: apply-aesthetic</span></div>
+          <pre><code>Using <b>apply-aesthetic</b>, apply the `apple` aesthetic: re-point the SEMANTIC tokens
+(background/foreground/primary/muted-foreground/destructive/border/ring + chart ramp
++ sidebar) to Apple values in BOTH light and dark, editing only tokens/*.tokens.json
+and globals.css. Verify every foreground/background pair meets WCAG 2.2 AA and
+annotate the ratios. Do NOT change any components/ui file. Then run tokens:build.</code></pre>
+        </div>
+        <div class="row">
+          <div class="produces"><span class="k">Produces</span>
+            <ul><li>--primary #0071e3</li><li>--muted-foreground #6e6e73</li><li>WCAG-annotated</li></ul>
+          </div>
+          <div class="gate"><span class="k">Gate 4</span><p><span class="chk">✓</span> all text pairs pass AA · app restyles · <b>zero</b> component diff.</p></div>
+        </div>
+        <div class="output">
+          <div class="oh">output <span class="fname">app/globals.css · :root</span></div>
+          <pre><code>:root {
+  --primary: <span class="tok">#0071e3</span>;          <span class="cm">/* white text 4.70:1 */</span>
+  --muted-foreground: <span class="tok">#6e6e73</span>; <span class="cm">/* 5.07:1 on white  */</span>
+  --destructive: <span class="tok">#d70015</span>;      <span class="cm">/* white text 5.38:1 */</span>
+}</code></pre>
+        </div>
+      </article>
+
+      <!-- P5 -->
+      <article class="phase">
+        <div class="node">5</div>
+        <div class="kicker">Phase 5</div>
+        <h2>Docs + Storybook at assignment depth</h2>
+        <p class="goal">Every component documented three ways — registry demo, 1:1 MDX doc, manual story — plus an a11y gate.</p>
+        <div class="prompt">
+          <div class="bar"><span class="dot"></span><span class="dot"></span><span class="dot"></span><span class="lbl">prompt · skills: design-component, design-qa</span></div>
+          <pre><code>Using <b>design-component</b> + <b>design-qa</b>: stand up Storybook (@storybook/nextjs-vite)
+with addons a11y, docs, themes, vitest, and a11y: { test: 'error' }. Build a doc
+registry (components/docs/registry.tsx) with a demo per component; a 1:1 MDX doc per
+component in stories/docs/ bound via &lt;Meta of={…}&gt;; and a manual story per component
+in stories/manual/ at assignment depth (state + variant galleries; real
+disabled/aria-invalid). Add scripts/gen-stories.mjs. Add a component-tier token block.</code></pre>
+        </div>
+        <div class="row">
+          <div class="produces"><span class="k">Produces</span>
+            <ul><li>55 × manual stories</li><li>55 × MDX (1:1)</li><li>registry.tsx</li><li>gen-stories.mjs</li></ul>
+          </div>
+          <div class="gate"><span class="k">Gate 5</span><p><span class="chk">✓</span> <code>test-storybook</code> green (render + axe AA, error-mode) · MDX = stories = component count.</p></div>
+        </div>
+        <div class="output">
+          <div class="oh">output <span class="fname">.storybook · stories/docs</span></div>
+          <pre><code><span class="cm">// .storybook/preview.tsx — axe fails the build</span>
+a11y: { test: <span class="tok">"error"</span> }
+
+<span class="cm">// stories/docs/Button.mdx — renders as the Docs tab</span>
+&lt;Meta of={ButtonStories} /&gt;</code></pre>
+        </div>
+      </article>
+
+      <!-- P6 -->
+      <article class="phase">
+        <div class="node">6</div>
+        <div class="kicker">Phase 6 · make it self-defending</div>
+        <h2>Quality gates + CI</h2>
+        <p class="goal">The design system can't silently regress.</p>
+        <div class="prompt">
+          <div class="bar"><span class="dot"></span><span class="dot"></span><span class="dot"></span><span class="lbl">prompt</span></div>
+          <pre><code>Add an audit system: scripts/audit-components.mjs + audit-variants.mjs (npm run audit)
+cross-checking the Figma Components pages vs components/ui/*, the doc registry, and the
+1:1 MDX docs, enforcing rule #1 — NO hardcoded colours outside components/ui — writing
+AUDIT.md + VARIANTS.md. Load the PAT via `node --env-file-if-exists=.env.local`. Then a
+GitHub Actions ci.yml with 4 gates: Lint & typecheck · Design-system gates (token-build
+reproducibility + hardcoded-colour check) · Storybook tests (render + a11y) · Next build.</code></pre>
+        </div>
+        <div class="row">
+          <div class="produces"><span class="k">Produces</span>
+            <ul><li>audit-*.mjs</li><li>AUDIT.md · VARIANTS.md</li><li>.github/workflows/ci.yml</li></ul>
+          </div>
+          <div class="gate"><span class="k">Gate 6</span><p><span class="chk">✓</span> 4 CI gates green on a PR · <code>npm run audit</code> = 0 hardcoded-colour violations.</p></div>
+        </div>
+        <div class="output">
+          <div class="oh">output <span class="fname">$ npm run audit</span></div>
+          <pre><code><span class="ok">✓</span> AUDIT.md written (mode: Figma + code)
+  figma: 55 · installed: 52 · documented: 55 · mdx: 55
+  hardcoded-color violations: <span class="ok">0</span>
+<span class="ok">✓</span> VARIANTS.md — 7/7 components fully covered</code></pre>
+        </div>
+      </article>
+
+      <!-- P7 -->
+      <article class="phase">
+        <div class="node">7</div>
+        <div class="kicker">Phase 7 · keep design ↔ code honest</div>
+        <h2>Figma round-trip tooling</h2>
+        <p class="goal">Prove — and keep proving — that the Figma file and the shipped tokens agree.</p>
+        <div class="prompt">
+          <div class="bar"><span class="dot"></span><span class="dot"></span><span class="dot"></span><span class="lbl">prompt</span></div>
+          <pre><code>Add scripts/figma-pull.mjs (npm run figma:pull &lt;nodeId&gt;) that matches a node's rendered
+colours → nearest primitive + semantic token (OKLab ΔE; primitives from DESIGN.md §A2
+hex, semantics from globals.css hex AND oklch). Add scripts/figma-token-parity.mjs
+(npm run figma:parity) sweeping every Components page, counting ONLY rendered colours
+(skip visible:false — invisible interiors over-report as false drift) → docs/
+figma-token-parity.md. Write docs/code-to-figma-push.md: writes go through the MCP
+Plugin API (use_figma), not REST (Enterprise-gated); text can't be automated.</code></pre>
+        </div>
+        <div class="row">
+          <div class="produces"><span class="k">Produces</span>
+            <ul><li>figma-pull.mjs</li><li>figma-token-parity.mjs</li><li>2 × docs</li></ul>
+          </div>
+          <div class="gate"><span class="k">Gate 7</span><p><span class="chk">✓</span> <code>figma:parity</code> ~99–100% of rendered colours map to a semantic/chart token; residual drift is explainable.</p></div>
+        </div>
+        <div class="output">
+          <div class="oh">output <span class="fname">docs/figma-token-parity.md</span></div>
+          <pre><code>Mapped to a semantic token: <span class="ok">4023/4035 (99.7%)</span>
+  <span class="tok">--foreground</span>  #1d1d1f ×1661
+  <span class="tok">--primary</span>     #0071e3 ×108
+  <span class="tok">--chart-2</span>     #0090ff ×91
+<span class="cm">Drift: Native Select OS-native greys only</span></code></pre>
+        </div>
+      </article>
+
+    </div>
+  </section>
+
+  <!-- traps -->
+  <section>
+    <div class="section-head">
+      <div class="eyebrow">Field notes</div>
+      <h2>The traps that cost the most time</h2>
+    </div>
+    <div class="traps">
+      <div class="trap"><b>Two Figma channels aren't interchangeable.</b> <span>REST reads structure; variable <i>values</i> are Enterprise-only over REST — use MCP <code>get_variable_defs</code>. Writes go through the Plugin API, never REST.</span></div>
+      <div class="trap"><b>A committed <code>variables-export.json</code> goes stale.</b> <span>Trust live Figma (MCP) for parity — the snapshot can still say "neutral" long after the live file went Apple.</span></div>
+      <div class="trap"><b>A raw node dump over-reports drift.</b> <span>Colours on <code>visible:false</code> nodes and instance interiors don't render — filter them, or you'll "fix" things nobody sees.</span></div>
+      <div class="trap"><b>Variant audits attribute per-page, not per-component.</b> <span>A <code>Type=Outline</code> found on the Spinner page may belong to a Button composed there. Open the node before "fixing."</span></div>
+      <div class="trap"><b>Tokens are generated.</b> <span>Edit <code>tokens/*.json</code> then <code>tokens:build</code> — never hand-edit the generated CSS (CI fails on drift). PATs expire; keep the live one in gitignored <code>.env.local</code>.</span></div>
+    </div>
+  </section>
+
+  <!-- checklist -->
+  <section>
+    <div class="section-head">
+      <div class="eyebrow">One full run</div>
+      <h2>Master checklist</h2>
+    </div>
+    <div class="check">
+      <h3>Tick top-to-bottom — don't start a phase until the one above is checked.</h3>
+      <div class="grp"><div class="lbl">0 · Foundations</div>
+        <ul><li>Node ≥ 20.12 · git · Claude Code</li><li>Figma MCP connected · <code>whoami</code> = Full seat</li><li>REST PAT in <code>.env.local</code> · <code>/v1/files/:key</code> → 200</li><li>skills vendored · CLAUDE.md written</li></ul></div>
+      <div class="grp"><div class="lbl">1 · Scaffold</div>
+        <ul><li><code>npm run dev</code> serves · <code>tsc</code> clean · zero hex</li></ul></div>
+      <div class="grp"><div class="lbl">2 · Tokens</div>
+        <ul><li>4 DTCG files · <code>tokens:build</code> reproducible · semantics alias primitives</li></ul></div>
+      <div class="grp"><div class="lbl">3 · Components</div>
+        <ul><li>52 owned primitives · combobox/data-table/date-picker · no hardcoded colour</li></ul></div>
+      <div class="grp"><div class="lbl">4 · Aesthetic</div>
+        <ul><li>Apple tokens (light + dark) · all text pairs AA · no component diff</li></ul></div>
+      <div class="grp"><div class="lbl">5 · Docs + Storybook</div>
+        <ul><li>a11y <code>test:'error'</code> · 55 MDX = 55 stories = component count · <code>test-storybook</code> green</li></ul></div>
+      <div class="grp"><div class="lbl">6 · Audit + CI</div>
+        <ul><li><code>npm run audit</code> = 0 violations · 4 CI gates green</li></ul></div>
+      <div class="grp"><div class="lbl">7 · Figma parity + push</div>
+        <ul><li><code>figma:pull</code> matches · <code>figma:parity</code> ~99–100% · push runbook present</li></ul></div>
+    </div>
+  </section>
+</div>
+
+<footer>
+  <div class="wrap">
+    <div class="mapline">0 foundations → 1 scaffold → 2 tokens → 3 components → 4 aesthetic → 5 docs+storybook → 6 audit+CI → 7 figma sync</div>
+    Each arrow is a green gate. Teach the gates, not just the prompts — the gate is what makes the next prompt safe. · Source: <code>docs/BUILD-FROM-ZERO.md</code>
+  </div>
+</footer>
