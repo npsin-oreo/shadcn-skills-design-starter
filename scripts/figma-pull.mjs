@@ -126,18 +126,31 @@ const deltaE = (x, y) => Math.hypot(x.L - y.L, x.a - y.a, x.b - y.b)
 
 function loadReference() {
   const ref = []
-  // primitives — DESIGN.md §B  (blue/700, neutral/200, …)
+  // primitives — DESIGN.md §A2 "tw-colors" (hex rows like `slate/500` | `#64748b`).
+  // Falls back to the legacy §B oklch table if this DESIGN.md predates the A-sections.
   try {
     const design = readFileSync(
       join(root, ".claude/skills/shadcn-ui-design/references/DESIGN.md"),
       "utf8",
     )
-    const sectionB = design.slice(design.indexOf("## §B"), design.indexOf("## §C"))
-    for (const m of sectionB.matchAll(/`([a-z]+)\/(\d+)`\s*\|\s*`(oklch\([^`]+)`/g)) {
-      ref.push({ name: `${m[1]}/${m[2]}`, kind: "primitive", ...oklchToOklab(m[3]) })
+    const a2 = design.indexOf("### A2")
+    let section
+    if (a2 !== -1) {
+      const a3 = design.indexOf("### A3", a2)
+      section = design.slice(a2, a3 === -1 ? undefined : a3)
+    } else {
+      section = design.slice(design.indexOf("## §B"), design.indexOf("## §C"))
     }
-    for (const m of sectionB.matchAll(/`(white|black)`\s*\|\s*`(oklch\([^`]+)`/g)) {
-      ref.push({ name: m[1], kind: "primitive", ...oklchToOklab(m[2]) })
+    // hex rows (current format)
+    for (const m of section.matchAll(/`([a-z-]+)\/(\d+)`\s*\|\s*`(#[0-9a-fA-F]{6})`/g)) {
+      ref.push({ name: `${m[1]}/${m[2]}`, kind: "primitive", ...hexToOklab(m[3]) })
+    }
+    for (const m of section.matchAll(/`(white|black)`\s*\|\s*`(#[0-9a-fA-F]{6})`/g)) {
+      ref.push({ name: m[1], kind: "primitive", ...hexToOklab(m[2]) })
+    }
+    // legacy oklch rows
+    for (const m of section.matchAll(/`([a-z]+)\/(\d+)`\s*\|\s*`(oklch\([^`]+)`/g)) {
+      ref.push({ name: `${m[1]}/${m[2]}`, kind: "primitive", ...oklchToOklab(m[3]) })
     }
   } catch {
     /* no DESIGN.md — primitives unavailable */
@@ -150,6 +163,10 @@ function loadReference() {
         css.match(new RegExp(`${selector}\\s*\\{([\\s\\S]*?)\\}`, "m"))?.[1] ?? ""
       for (const m of body.matchAll(/--([\w-]+):\s*(oklch\([^;]+)\s*;/g)) {
         ref.push({ name: `--${m[1]}`, kind: "semantic", mode, ...oklchToOklab(m[2]) })
+      }
+      // hex semantic values (current Apple theme uses hex, not oklch)
+      for (const m of body.matchAll(/--([\w-]+):\s*(#[0-9a-fA-F]{6})\s*;/g)) {
+        ref.push({ name: `--${m[1]}`, kind: "semantic", mode, ...hexToOklab(m[2]) })
       }
     }
   } catch {
@@ -169,14 +186,15 @@ function makeMatcher() {
     }, null)
 
   return function match(hex) {
-    if (!/^#[0-9a-fA-F]{6}/.test(hex) || !primitives.length) return null
+    if (!/^#[0-9a-fA-F]{6}/.test(hex)) return null
     const lab = hexToOklab(hex)
-    const prim = nearest(lab, primitives)
-    const sem = nearest(lab, semantics)
+    const prim = primitives.length ? nearest(lab, primitives) : null
+    const sem = semantics.length ? nearest(lab, semantics) : null
+    if (!prim && !sem) return null
     return {
-      token: prim.name,
-      delta: +prim.delta.toFixed(4),
-      exact: prim.delta < 0.003,
+      token: prim?.name ?? null,
+      delta: prim ? +prim.delta.toFixed(4) : null,
+      exact: prim ? prim.delta < 0.003 : null,
       semantic: sem && sem.delta < 0.012 ? { name: sem.name, mode: sem.mode } : null,
     }
   }
