@@ -45,6 +45,9 @@ npm run audit            # AUDIT.md (rule #1) [+ VARIANTS.md when a Figma token 
 
 ## Figma
 
-Code is the source of truth; sync **code → Figma** via the Figma MCP (the REST PAT is dead).
-Colors in Figma must be applied via **alias/semantic** variables only — semantic vars **alias
-primitives**, never hold raw values. See CLAUDE.md → "Figma MCP Integration Rules".
+Code is the source of truth; sync **code → Figma** via the Figma MCP (the REST PAT is dead; writes
+use the MCP OAuth connection). Colors in Figma must be applied via **alias/semantic** variables
+only — semantic vars **alias primitives**, never hold raw values. Pull direction (Figma → code):
+CLAUDE.md → "Figma MCP Integration Rules". Push direction (code → Figma) runbook:
+**[docs/code-to-figma-push.md](./docs/code-to-figma-push.md)** — auth/seat, token→Variable mapping,
+what can't be automated (text/Google Sans), and the per-page variant-attribution pitfall.

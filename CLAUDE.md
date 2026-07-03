@@ -114,6 +114,12 @@ components.json           # shadcn config (radix, neutral, @/ aliases)
 A Figma URL looks like `https://figma.com/design/:fileKey/:name?node-id=1-2`
 (fileKey after `/design/`, nodeId = the `node-id` value).
 
+> This section is the **Figma → code** (pull) flow. For the reverse — **code → Figma** (push) —
+> follow the runbook in [`docs/code-to-figma-push.md`](docs/code-to-figma-push.md): writes go
+> through the MCP OAuth connection (the REST PAT is dead), load the `figma-use` skill first, and
+> mind the limits (text can't be automated — Google Sans) and the per-page variant-attribution
+> pitfall. The `npm run audit` pipeline is read-only and never writes to Figma.
+
 1. **`get_design_context`** for the node. If the response is truncated, run **`get_metadata`**
    for the node map, then re-fetch the specific child nodes individually.
 2. **`get_variable_defs`** to read the design variables bound to the selection.
