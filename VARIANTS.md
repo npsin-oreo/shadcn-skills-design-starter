@@ -11,11 +11,11 @@
 | `accordion` | ✅ | — | ✅ all shown |
 | `alert-dialog` | ✅ | — | ✅ all shown |
 | `badge` | ✅ | **Type**: Secondary / Destructive / Outline / Secondary_icon / Default_number / Destructive_number / Secondary_number | ✅ all shown |
-| `breadcrumb` | 🟡 | **Type**: Custom_seperator / Dropdown / Collapsed | Type=Custom_seperator, Type=Dropdown, Type=Collapsed |
+| `breadcrumb` | ✅ | **Type**: Custom_seperator / Dropdown / Collapsed | ✅ all shown |
 | `button` | ✅ | **Type**: Primary / Secondary / Destructive / Outline / Ghost / Link / Icon / With icon | ✅ all shown |
-| `button-group` | 🟡 | **Size**: Small / Large | Size=Small, Size=Large |
+| `button-group` | ✅ | **Size**: Small / Large | ✅ all shown |
 | `calendar` | ✅ | — | ✅ all shown |
-| `checkbox` | 🟡 | **Type**: Card | Type=Card |
+| `checkbox` | ✅ | **Type**: Card | ✅ all shown |
 | `collapsible` | ✅ | — | ✅ all shown |
 | `combobox` | ✅ | — | ✅ all shown |
 | `command` | ✅ | — | ✅ all shown |
@@ -36,7 +36,7 @@
 | `select` | ✅ | — | ✅ all shown |
 | `sheet` | ✅ | — | ✅ all shown |
 | `sidebar` | ✅ | — | ✅ all shown |
-| `spinner` | 🟡 | **Size**: 12 / 16 / 24 / 32<br>**Color**: Red / Green / Blue / Yellow<br>**Type**: Outline / Secondary | Color=Red, Color=Green, Color=Blue, Color=Yellow, Type=Outline, Type=Secondary |
+| `spinner` | ✅ | **Size**: 12 / 16 / 24 / 32<br>**Color**: Red / Green / Blue / Yellow<br>**Type**: Outline / Secondary | ✅ all shown |
 | `switch` | ✅ | — | ✅ all shown |
 | `textarea` | ✅ | — | ✅ all shown |
 | `toggle` | ✅ | — | ✅ all shown |
@@ -45,12 +45,9 @@
 
 **Legend** — ✅ documented with every visual variant shown · 🟡 documented but missing an example for a Figma variant · ⛔ not documented.
 
-## 🟡 Documented but missing a variant example (4)
+## 🟡 Documented but missing a variant example (0)
 
-- **breadcrumb** — missing Type=Custom_seperator, Type=Dropdown, Type=Collapsed
-- **button-group** — missing Size=Small, Size=Large
-- **checkbox** — missing Type=Card
-- **spinner** — missing Color=Red, Color=Green, Color=Blue, Color=Yellow, Type=Outline, Type=Secondary
+none — every documented component shows all its Figma visual variants.
 
 ## ⛔ Not documented (Figma component sets)
 

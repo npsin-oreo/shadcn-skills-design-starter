@@ -1,5 +1,5 @@
 import type { ReactNode } from "react";
-import { Bell, Bold, Italic, Search, Star, Underline } from "lucide-react";
+import { Bell, Bold, Italic, Search, Slash, Star, Underline } from "lucide-react";
 
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
@@ -11,7 +11,7 @@ import { AspectRatio } from "@/components/ui/aspect-ratio";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import {
-  Breadcrumb, BreadcrumbItem, BreadcrumbLink, BreadcrumbList, BreadcrumbPage, BreadcrumbSeparator,
+  Breadcrumb, BreadcrumbEllipsis, BreadcrumbItem, BreadcrumbLink, BreadcrumbList, BreadcrumbPage, BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
 import { Button } from "@/components/ui/button";
 import { ButtonGroup } from "@/components/ui/button-group";
@@ -153,17 +153,49 @@ export const registry: DocEntry[] = [
     </DemoShowcase>,
     `<Button size="sm">Small</Button>\n<Button size="md">Medium</Button>\n<Button size="xl">Extra Large</Button>`),
 
-  c("button-group", "Button Group", "Form & Input", "Groups related buttons together.",
-    <ButtonGroup>
-      <Button variant="outline">Years</Button><Button variant="outline">Months</Button><Button variant="outline">Days</Button>
-    </ButtonGroup>,
-    `<ButtonGroup>\n  <Button variant="outline">Years</Button>\n  <Button variant="outline">Months</Button>\n</ButtonGroup>`),
+  c("button-group", "Button Group", "Form & Input", "Groups related buttons together. Size is driven by the buttons inside the group.",
+    <DemoShowcase>
+      <DemoSection label="Default">
+        <DemoItem><ButtonGroup>
+          <Button variant="outline">Years</Button><Button variant="outline">Months</Button><Button variant="outline">Days</Button>
+        </ButtonGroup></DemoItem>
+      </DemoSection>
+      <DemoSection label="Small">
+        <DemoItem caption="size=sm"><ButtonGroup>
+          <Button size="sm" variant="outline">Years</Button><Button size="sm" variant="outline">Months</Button><Button size="sm" variant="outline">Days</Button>
+        </ButtonGroup></DemoItem>
+      </DemoSection>
+      <DemoSection label="Large">
+        <DemoItem caption="size=lg"><ButtonGroup>
+          <Button size="lg" variant="outline">Years</Button><Button size="lg" variant="outline">Months</Button><Button size="lg" variant="outline">Days</Button>
+        </ButtonGroup></DemoItem>
+      </DemoSection>
+    </DemoShowcase>,
+    `<ButtonGroup>\n  <Button size="sm" variant="outline">Years</Button>\n  <Button size="sm" variant="outline">Months</Button>\n</ButtonGroup>\n\n<ButtonGroup>\n  <Button size="lg" variant="outline">Years</Button>\n  <Button size="lg" variant="outline">Months</Button>\n</ButtonGroup>`),
 
   c("checkbox", "Checkbox", "Form & Input", "A control that toggles between checked and unchecked.",
-    <div className="flex items-center gap-2">
-      <Checkbox id="terms" defaultChecked /><Label htmlFor="terms">Accept terms and conditions</Label>
-    </div>,
-    `<Checkbox id="terms" />\n<Label htmlFor="terms">Accept terms</Label>`),
+    <DemoShowcase>
+      <DemoSection label="Default">
+        <DemoItem className="flex-row items-center gap-2">
+          <Checkbox id="terms" defaultChecked /><Label htmlFor="terms">Accept terms and conditions</Label>
+        </DemoItem>
+      </DemoSection>
+      <DemoSection label="Card">
+        <DemoItem>
+          <Label
+            htmlFor="card-notify"
+            className="flex items-start gap-3 rounded-lg border border-input p-4 has-data-checked:border-primary has-data-checked:bg-primary/5"
+          >
+            <Checkbox id="card-notify" defaultChecked className="mt-0.5" />
+            <div className="grid gap-1 font-normal">
+              <p className="text-sm font-medium leading-none">Enable notifications</p>
+              <p className="text-sm text-muted-foreground">Send me product updates and news.</p>
+            </div>
+          </Label>
+        </DemoItem>
+      </DemoSection>
+    </DemoShowcase>,
+    `// Card checkbox\n<Label className="flex items-start gap-3 rounded-lg border p-4 has-data-checked:border-primary has-data-checked:bg-primary/5">\n  <Checkbox defaultChecked />\n  <div className="grid gap-1">\n    <p className="text-sm font-medium">Enable notifications</p>\n    <p className="text-sm text-muted-foreground">Send me product updates.</p>\n  </div>\n</Label>`),
 
   c("field", "Field", "Form & Input", "A labelled form field with description.",
     <FieldGroup className="w-full max-w-sm">
@@ -423,11 +455,19 @@ export const registry: DocEntry[] = [
         <DemoItem caption="size-6"><Spinner className="size-6" /></DemoItem>
         <DemoItem caption="size-8"><Spinner className="size-8" /></DemoItem>
       </DemoSection>
-      <DemoSection label="In context">
-        <DemoItem caption="button"><Button disabled><Spinner />Loading</Button></DemoItem>
+      <DemoSection label="Color">
+        <DemoItem caption="currentColor"><Spinner /></DemoItem>
+        <DemoItem caption="primary"><Spinner className="text-primary" /></DemoItem>
+        <DemoItem caption="muted-foreground"><Spinner className="text-muted-foreground" /></DemoItem>
+        <DemoItem caption="destructive"><Spinner className="text-destructive" /></DemoItem>
+      </DemoSection>
+      <DemoSection label="Loading button">
+        <DemoItem caption="default"><Button disabled><Spinner />Loading…</Button></DemoItem>
+        <DemoItem caption="outline"><Button variant="outline" disabled><Spinner />Loading…</Button></DemoItem>
+        <DemoItem caption="secondary"><Button variant="secondary" disabled><Spinner />Loading…</Button></DemoItem>
       </DemoSection>
     </DemoShowcase>,
-    `<Spinner />\n<Spinner className="size-6" />\n<Button disabled><Spinner />Loading</Button>`),
+    `// Color follows the current text color — use a semantic token, never a raw hex\n<Spinner className="text-primary" />\n<Spinner className="text-muted-foreground" />\n<Spinner className="text-destructive" />\n\n// In a loading button — spinner inherits the button's foreground color\n<Button disabled><Spinner />Loading…</Button>\n<Button variant="outline" disabled><Spinner />Loading…</Button>\n<Button variant="secondary" disabled><Spinner />Loading…</Button>`),
 
   c("table", "Table", "Display", "A responsive table for tabular data.",
     <div className="mx-auto w-full max-w-2xl">
@@ -443,14 +483,60 @@ export const registry: DocEntry[] = [
 
   // ───────────────────────── Navigation ─────────────────────────
   c("breadcrumb", "Breadcrumb", "Navigation", "Displays the path to the current resource.",
-    <Breadcrumb>
-      <BreadcrumbList>
-        <BreadcrumbItem><BreadcrumbLink href="/docs">Docs</BreadcrumbLink></BreadcrumbItem>
-        <BreadcrumbSeparator />
-        <BreadcrumbItem><BreadcrumbPage>Breadcrumb</BreadcrumbPage></BreadcrumbItem>
-      </BreadcrumbList>
-    </Breadcrumb>,
-    `<Breadcrumb>\n  <BreadcrumbList>\n    <BreadcrumbItem><BreadcrumbLink href="/docs">Docs</BreadcrumbLink></BreadcrumbItem>\n  </BreadcrumbList>\n</Breadcrumb>`),
+    <DemoShowcase>
+      <DemoSection label="Default">
+        <DemoItem><Breadcrumb>
+          <BreadcrumbList>
+            <BreadcrumbItem><BreadcrumbLink href="/docs">Docs</BreadcrumbLink></BreadcrumbItem>
+            <BreadcrumbSeparator />
+            <BreadcrumbItem><BreadcrumbPage>Breadcrumb</BreadcrumbPage></BreadcrumbItem>
+          </BreadcrumbList>
+        </Breadcrumb></DemoItem>
+      </DemoSection>
+      <DemoSection label="Custom separator">
+        <DemoItem><Breadcrumb>
+          <BreadcrumbList>
+            <BreadcrumbItem><BreadcrumbLink href="/docs">Docs</BreadcrumbLink></BreadcrumbItem>
+            <BreadcrumbSeparator><Slash /></BreadcrumbSeparator>
+            <BreadcrumbItem><BreadcrumbPage>Breadcrumb</BreadcrumbPage></BreadcrumbItem>
+          </BreadcrumbList>
+        </Breadcrumb></DemoItem>
+      </DemoSection>
+      <DemoSection label="Dropdown">
+        <DemoItem><Breadcrumb>
+          <BreadcrumbList>
+            <BreadcrumbItem><BreadcrumbLink href="/docs">Docs</BreadcrumbLink></BreadcrumbItem>
+            <BreadcrumbSeparator />
+            <BreadcrumbItem>
+              <DropdownMenu>
+                <DropdownMenuTrigger className="flex items-center gap-1" aria-label="Toggle menu">
+                  <BreadcrumbEllipsis />
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="start">
+                  <DropdownMenuItem>Components</DropdownMenuItem>
+                  <DropdownMenuItem>Themes</DropdownMenuItem>
+                  <DropdownMenuItem>GitHub</DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+            </BreadcrumbItem>
+            <BreadcrumbSeparator />
+            <BreadcrumbItem><BreadcrumbPage>Breadcrumb</BreadcrumbPage></BreadcrumbItem>
+          </BreadcrumbList>
+        </Breadcrumb></DemoItem>
+      </DemoSection>
+      <DemoSection label="Collapsed">
+        <DemoItem><Breadcrumb>
+          <BreadcrumbList>
+            <BreadcrumbItem><BreadcrumbLink href="/">Home</BreadcrumbLink></BreadcrumbItem>
+            <BreadcrumbSeparator />
+            <BreadcrumbItem><BreadcrumbEllipsis /></BreadcrumbItem>
+            <BreadcrumbSeparator />
+            <BreadcrumbItem><BreadcrumbPage>Breadcrumb</BreadcrumbPage></BreadcrumbItem>
+          </BreadcrumbList>
+        </Breadcrumb></DemoItem>
+      </DemoSection>
+    </DemoShowcase>,
+    `// Custom separator\n<BreadcrumbSeparator><Slash /></BreadcrumbSeparator>\n\n// Dropdown / Collapsed use BreadcrumbEllipsis\n<BreadcrumbItem><BreadcrumbEllipsis /></BreadcrumbItem>`),
 
   c("menubar", "Menubar", "Navigation", "A desktop-style menu bar.",
     <Menubar>
