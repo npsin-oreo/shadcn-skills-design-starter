@@ -6,8 +6,8 @@
 
 - Component pages swept: **55**
 - Rendered colour instances: **4035** · distinct hexes: **17**
-- Mapped to a semantic token: **3932/4035 (97.4%)**
-- Unmapped (non-decorative) drift: **99** across **5** hexes
+- Mapped to a semantic token: **4023/4035 (99.7%)**
+- Unmapped (non-decorative) drift: **8** across **4** hexes
 
 ## Semantic token → rendered Figma hex
 
@@ -16,6 +16,7 @@
 | `--background (dark)` | `#000000`×7 |
 | `--background` | `#ffffff`×577 |
 | `--border` | `#d2d2d7`×871 |
+| `--chart-2` | `#0090ff`×91 |
 | `--destructive` | `#d70015`×13 |
 | `--foreground` | `#1d1d1f`×1661 |
 | `--muted-foreground` | `#6e6e73`×551 |
@@ -26,7 +27,6 @@
 
 | hex | count | nearest primitive |
 | --- | --- | --- |
-| `#0090ff` | 91 | blue/500 (Δ0.0377) |
 | `#6b7280` | 3 | gray/500 (Δ0) |
 | `#4b5563` | 3 | gray/600 (Δ0) |
 | `#737373` | 1 | neutral/500 (Δ0) |

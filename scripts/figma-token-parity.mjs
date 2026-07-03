@@ -47,6 +47,12 @@ function hexToOklab(hex) {
   const s = Math.cbrt(0.0883024619 * r + 0.2817188376 * g + 0.6299787005 * b)
   return { L: 0.2104542553 * l + 0.793617785 * m - 0.0040720468 * s, a: 1.9779984951 * l - 2.428592205 * m + 0.4505937099 * s, b: 0.0259040371 * l + 0.7827717662 * m - 0.808675766 * s }
 }
+function oklchToOklab(str) {
+  const inner = str.slice(str.indexOf("(") + 1, str.lastIndexOf(")"))
+  const [L, C, H] = inner.split("/")[0].trim().split(/\s+/).map(Number)
+  const rad = ((H || 0) * Math.PI) / 180
+  return { L, a: (C || 0) * Math.cos(rad), b: (C || 0) * Math.sin(rad) }
+}
 const dE = (x, y) => Math.hypot(x.L - y.L, x.a - y.a, x.b - y.b)
 
 function loadRefs() {
@@ -64,6 +70,8 @@ function loadRefs() {
     for (const [sel, mode] of [[":root", "light"], ["\\.dark", "dark"]]) {
       const body = css.match(new RegExp(`${sel}\\s*\\{([\\s\\S]*?)\\}`, "m"))?.[1] ?? ""
       for (const m of body.matchAll(/--([\w-]+):\s*(#[0-9a-fA-F]{6})\s*;/g)) sem.push({ name: `--${m[1]}`, mode, ...hexToOklab(m[2]) })
+      // chart tokens (and any other role) authored as oklch(...)
+      for (const m of body.matchAll(/--([\w-]+):\s*(oklch\([^;]+\))\s*;/g)) sem.push({ name: `--${m[1]}`, mode, ...oklchToOklab(m[2]) })
     }
   } catch { /* no globals.css */ }
   return { prim, sem }
