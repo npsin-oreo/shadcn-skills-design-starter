@@ -9,6 +9,7 @@
     "lint": "eslint",
     "typecheck": "tsc --noEmit",
     "figma:pull": "node scripts/figma-pull.mjs",
+    "figma:parity": "node --env-file-if-exists=.env.local scripts/figma-token-parity.mjs",
     "docs:offline": "bash scripts/open-docs.command",
     "gen:stories": "node scripts/gen-stories.mjs",
     "tokens:build": "node scripts/build-tokens.mjs",
