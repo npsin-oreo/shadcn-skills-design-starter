@@ -51,3 +51,6 @@ only — semantic vars **alias primitives**, never hold raw values. Pull directi
 CLAUDE.md → "Figma MCP Integration Rules". Push direction (code → Figma) runbook:
 **[docs/code-to-figma-push.md](./docs/code-to-figma-push.md)** — auth/seat, token→Variable mapping,
 what can't be automated (text/Google Sans), and the per-page variant-attribution pitfall.
+Drift check: `npm run figma:pull <nodeId>` matches a node's colours → tokens; `npm run figma:parity`
+sweeps every Components page and writes **[docs/figma-token-parity.md](./docs/figma-token-parity.md)**
+(rendered colours only — invisible nodes skipped, so no false "drift" from instance interiors).
