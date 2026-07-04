@@ -6,28 +6,28 @@
 
 - Component pages swept: **55**
 - Rendered colour instances: **4035** · distinct hexes: **17**
-- Mapped to a semantic token: **4023/4035 (99.7%)**
-- Unmapped (non-decorative) drift: **8** across **4** hexes
+- Mapped to a semantic token: **4005/4035 (99.3%)**
+- Unmapped (non-decorative) drift: **26** across **4** hexes
 
 ## Semantic token → rendered Figma hex
 
 | token | Figma hex (count) |
 | --- | --- |
-| `--background (dark)` | `#000000`×7 |
-| `--background` | `#ffffff`×577 |
-| `--border` | `#d2d2d7`×871 |
+| `--background` | `#ffffff`×492 |
+| `--border` | `#e5e5e5`×872 |
 | `--chart-2` | `#0090ff`×91 |
-| `--destructive` | `#d70015`×13 |
-| `--foreground` | `#1d1d1f`×1661 |
-| `--muted-foreground` | `#6e6e73`×551 |
-| `--primary` | `#0071e3`×108 |
-| `--secondary` | `#f5f5f7`×144 |
+| `--foreground` | `#0a0a0a`×1626 |
+| `--muted-foreground` | `#737373`×552 |
+| `--primary` | `#171717`×126 |
+| `--primary-foreground` | `#fafafa`×87 |
+| `--ring` | `#a3a3a3`×17 |
+| `--secondary` | `#f5f5f5`×142 |
 
 ## Drift — rendered colours with no semantic token
 
 | hex | count | nearest primitive |
 | --- | --- | --- |
+| `#dc2626` | 13 | red/600 (Δ0) |
+| `#000000` | 7 | black (Δ0) |
 | `#6b7280` | 3 | gray/500 (Δ0) |
 | `#4b5563` | 3 | gray/600 (Δ0) |
-| `#737373` | 1 | neutral/500 (Δ0) |
-| `#e5e5e5` | 1 | neutral/200 (Δ0) |
