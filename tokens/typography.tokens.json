@@ -1,10 +1,10 @@
 {
   "$schema": "https://design-tokens.github.io/community-group/format/",
-  "$description": "Type tokens, Apple language. Sans uses the Apple system stack so SF Pro renders natively on Apple devices (SF Pro is proprietary; -apple-system pulls it on macOS/iOS, graceful fallback elsewhere). Size/weight steps map 1:1 to Tailwind's built-in text-* / font-* scale, referenced via utilities rather than redeclared.",
+  "$description": "Type tokens (neutral base). Sans is Geist (the working default; the design target is Google Sans — add the licensed face via next/font/local and swap when available). Size/weight steps map 1:1 to Tailwind's built-in text-* / font-* scale, referenced via utilities rather than redeclared.",
 
   "primitive": {
     "fontFamily": {
-      "sans": { "$type": "fontFamily", "$value": ["-apple-system", "BlinkMacSystemFont", "SF Pro Display", "SF Pro Text", "Helvetica Neue", "Helvetica", "Arial", "sans-serif"], "$description": "Apple system stack — renders SF Pro on Apple platforms" },
+      "sans": { "$type": "fontFamily", "$value": ["var(--font-geist-sans)", "ui-sans-serif", "system-ui", "sans-serif"], "$description": "Geist via next/font (see app/layout.tsx) — neutral default" },
       "mono": { "$type": "fontFamily", "$value": ["var(--font-geist-mono)", "ui-monospace", "SFMono-Regular", "Menlo", "monospace"] }
     },
     "fontWeight": {

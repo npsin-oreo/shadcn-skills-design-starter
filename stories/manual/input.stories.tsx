@@ -54,7 +54,7 @@ export const States: Story = {
     <div className="flex flex-col gap-4">
       <Cell label="default"><Input placeholder="Email" aria-label="Email default" /></Cell>
       <Cell label="focus"><Input placeholder="Email" aria-label="Email focus" className="border-ring ring-ring/50 ring-3" /></Cell>
-      <Cell label="filled"><Input defaultValue="hello@apple.com" aria-label="Email filled" /></Cell>
+      <Cell label="filled"><Input defaultValue="hello@example.com" aria-label="Email filled" /></Cell>
       <Cell label="disabled"><Input placeholder="Email" aria-label="Email disabled" disabled /></Cell>
       <Cell label="error (aria-invalid)"><Input defaultValue="not-an-email" aria-label="Email error" aria-invalid /></Cell>
     </div>

@@ -164,7 +164,7 @@ function loadReference() {
       for (const m of body.matchAll(/--([\w-]+):\s*(oklch\([^;]+)\s*;/g)) {
         ref.push({ name: `--${m[1]}`, kind: "semantic", mode, ...oklchToOklab(m[2]) })
       }
-      // hex semantic values (current Apple theme uses hex, not oklch)
+      // hex semantic values (a brand re-point may use hex instead of oklch)
       for (const m of body.matchAll(/--([\w-]+):\s*(#[0-9a-fA-F]{6})\s*;/g)) {
         ref.push({ name: `--${m[1]}`, kind: "semantic", mode, ...hexToOklab(m[2]) })
       }

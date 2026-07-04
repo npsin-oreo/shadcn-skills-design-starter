@@ -1,12 +1,12 @@
 import * as React from "react";
 import type { Preview } from "@storybook/nextjs-vite";
 import { withThemeByClassName } from "@storybook/addon-themes";
-import { Geist_Mono } from "next/font/google";
+import { Geist, Geist_Mono } from "next/font/google";
 import "../app/globals.css";
 
-// Sans is the Apple system stack defined as --font-sans in globals.css (:root),
-// which Storybook imports above — so it's available without next/font (SF Pro
-// renders natively on Apple devices). Only mono needs loading here.
+// Load the fonts the app wires in app/layout.tsx — Storybook doesn't run the
+// layout, so we set the --font-geist-* vars here (--font-sans resolves to Geist).
+const fontSans = Geist({ variable: "--font-geist-sans", subsets: ["latin"] });
 const fontMono = Geist_Mono({ variable: "--font-geist-mono", subsets: ["latin"] });
 
 const preview: Preview = {
@@ -35,7 +35,7 @@ const preview: Preview = {
       // `w-full max-w-*` resolve to their intended width instead of collapsing
       // to min-content (the per-word-wrap bug). justify-center centers vertically.
       <div
-        className={`${fontMono.variable} font-sans flex min-h-svh w-full flex-col items-center justify-center gap-4 bg-background p-10 text-foreground`}
+        className={`${fontSans.variable} ${fontMono.variable} font-sans flex min-h-svh w-full flex-col items-center justify-center gap-4 bg-background p-10 text-foreground`}
       >
         <Story />
       </div>
