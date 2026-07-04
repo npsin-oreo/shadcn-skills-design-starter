@@ -33,9 +33,11 @@ const preview: Preview = {
       // flex-col + items-center centers the story horizontally WITHOUT shrinking
       // it: the container keeps a definite width (w-full), so demos that use
       // `w-full max-w-*` resolve to their intended width instead of collapsing
-      // to min-content (the per-word-wrap bug). justify-center centers vertically.
+      // to min-content (the per-word-wrap bug). justify-[safe_center] centers
+      // vertically when the story fits, but aligns it to the top (no clipping /
+      // extra scroll) when a tall showcase is taller than the canvas.
       <div
-        className={`${fontSans.variable} ${fontMono.variable} font-sans flex min-h-svh w-full flex-col items-center justify-center gap-4 bg-background p-10 text-foreground`}
+        className={`${fontSans.variable} ${fontMono.variable} font-sans flex min-h-svh w-full flex-col items-center justify-center-safe gap-4 bg-background p-6 text-foreground`}
       >
         <Story />
       </div>
