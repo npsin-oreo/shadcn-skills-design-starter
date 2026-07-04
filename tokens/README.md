@@ -48,7 +48,7 @@ tool-portable definition of the same system.
 
 Every mapped text/UI color pair is verified **WCAG 2.2 AA**. The neutral base uses
 the shadcn neutral OKLCH scale (e.g. `--foreground` oklch(0.145) on `--background`
-oklch(1) ≈ 19:1; `--muted-foreground` oklch(0.556) on white ≈ 4.6:1). When you
+oklch(1) ≈ 19:1; `--muted-foreground` oklch(0.556) on white ≈ 4.74:1). When you
 apply a brand, re-verify each pair — the `apply-aesthetic` skill checks contrast
 as part of the re-point.
 
