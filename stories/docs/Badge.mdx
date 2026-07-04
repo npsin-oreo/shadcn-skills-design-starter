@@ -7,7 +7,7 @@ import * as BadgeStories from "../manual/badge.stories";
 
 A small count or status descriptor — labels, counts, tags, and inline status.
 Built on `components/ui/badge.tsx` (class-variance-authority), styled through the
-Apple-language design tokens. Renders a `<span>` by default, or any element via
+neutral design tokens. Renders a `<span>` by default, or any element via
 `asChild` (e.g. an anchor for a clickable tag).
 
 ## Anatomy
@@ -34,7 +34,7 @@ Apple-language design tokens. Renders a `<span>` by default, or any element via
 
 | Variant | Use it for |
 |---|---|
-| `default` | Primary status / emphasis — Apple action blue. |
+| `default` | Primary status / emphasis — the primary fill. |
 | `secondary` | Neutral status on a quiet surface. |
 | `destructive` | Errors, failures, overdue — soft red treatment. |
 | `outline` | Low-emphasis tags where a fill would be too loud. |
@@ -63,7 +63,7 @@ uses a real `aria-invalid`.
 
 | Token | Role |
 |---|---|
-| `--badge-default-bg` → `--primary` | Default fill (Apple blue `#0071e3`) |
+| `--badge-default-bg` → `--primary` | Default fill (primary) |
 | `--badge-default-fg` → `--primary-foreground` | Label on fill (white, 4.70:1 AA) |
 | `--badge-secondary-bg` → `--secondary` | Secondary fill |
 | `--badge-destructive-fg` → `--destructive` | Soft destructive text on `destructive/10` |
